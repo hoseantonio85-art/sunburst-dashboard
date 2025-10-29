@@ -24,7 +24,7 @@ class SunburstChart {
         
         this.root.each(d => d.current = d);
         this.currentRoot = this.root;
-        this.history.push(this.root); // Добавляем корень в историю
+        this.history = [this.root]; // Инициализируем историю с корневым элементом
 
         // Создаем генератор дуг
         this.arc = d3.arc()
@@ -55,7 +55,7 @@ class SunburstChart {
             .attr("r", radius)
             .attr("fill", "none")
             .attr("pointer-events", "all")
-            .on("click", (event) => this.clicked(event, this.root));
+            .on("click", (event) => this.navigateTo(this.root));
     }
 
     getRiskColor(riskLevel) {
@@ -69,19 +69,12 @@ class SunburstChart {
     }
 
     updateChart() {
-        const that = this;
-
         // Обновляем пути
         const path = this.pathGroup
             .selectAll("path")
             .data(this.root.descendants().slice(1))
             .join("path")
             .attr("fill", d => {
-                // Для корневого уровня используем нейтральный цвет
-                if (d.depth === 1) {
-                    return this.getRiskColor(d.data.riskLevel || 'low');
-                }
-                // Для вложенных уровней используем цвет риска
                 return this.getRiskColor(d.data.riskLevel || 'low');
             })
             .attr("fill-opacity", d => this.arcVisible(d.current) ? (d.children ? 0.8 : 0.7) : 0)
@@ -93,7 +86,7 @@ class SunburstChart {
         // Делаем кликабельными элементы с детьми
         path.filter(d => d.children)
             .style("cursor", "pointer")
-            .on("click", (event, d) => this.clicked(event, d));
+            .on("click", (event, d) => this.navigateTo(d));
 
         // Добавляем title
         path.append("title")
@@ -131,8 +124,8 @@ class SunburstChart {
         return levels[riskLevel] || 'Не определен';
     }
 
-    clicked(event, p) {
-        // Добавляем текущее состояние в историю перед переходом
+    navigateTo(p) {
+        // Добавляем в историю только если это новый элемент
         if (this.currentRoot !== p) {
             this.history.push(p);
         }
@@ -147,7 +140,7 @@ class SunburstChart {
             y1: Math.max(0, d.y1 - p.depth)
         });
 
-        const t = this.svg.transition().duration(event && event.altKey ? 7500 : 750);
+        const t = this.svg.transition().duration(750);
 
         // Анимация путей
         this.pathGroup.selectAll("path")
@@ -184,11 +177,10 @@ class SunburstChart {
             this.history.pop();
             // Берем предыдущее состояние
             const previous = this.history[this.history.length - 1];
-            this.clicked(null, previous);
-        } else {
-            // Если история пуста, возвращаемся к корню
-            this.clicked(null, this.root);
+            this.navigateTo(previous);
+            return true;
         }
+        return false;
     }
 
     arcVisible(d) {
@@ -203,11 +195,6 @@ class SunburstChart {
         const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;
         const y = (d.y0 + d.y1) / 2 * (800 / 6);
         return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
-    }
-
-    resetToRoot() {
-        this.history = [this.root];
-        this.clicked(null, this.root);
     }
 
     onSegmentClick(callback) {
