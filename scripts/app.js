@@ -2,9 +2,8 @@ class App {
     constructor() {
         this.data = null;
         this.chart = null;
-        this.currentNode = null;
         
-        // Элементы DOM
+        // DOM элементы
         this.elements = {
             sunburstChart: document.getElementById('sunburstChart'),
             detailsPanel: document.getElementById('detailsPanel'),
@@ -19,24 +18,23 @@ class App {
             await this.loadData();
             this.initChart();
             this.setupEventHandlers();
-            console.log('Приложение инициализировано успешно');
+            this.updateBackButton();
         } catch (error) {
-            console.error('Ошибка инициализации приложения:', error);
-            this.showError('Не удалось загрузить данные');
+            console.error('Ошибка инициализации:', error);
+            this.showError('Не удалось загрузить данные. Используются демо-данные.');
+            this.data = this.getFallbackData();
+            this.initChart();
         }
     }
 
     async loadData() {
         try {
             const response = await fetch('data/dataset.json');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             this.data = await response.json();
-            console.log('Данные успешно загружены:', this.data);
         } catch (error) {
-            console.warn('Ошибка загрузки данных, используем fallback данные:', error);
-            this.data = this.getFallbackData();
+            console.warn('Ошибка загрузки данных:', error);
+            throw error;
         }
     }
 
@@ -47,47 +45,38 @@ class App {
             (node) => this.updateDetails(node)
         );
         
-        // Показываем начальное состояние
+        // Показываем корневой узел
         this.updateDetails(this.chart.root);
     }
 
     setupEventHandlers() {
-        // Обработчик кнопки "Назад"
+        // Кнопка "Назад"
         this.elements.backButton.addEventListener('click', () => {
-            this.handleBackClick();
+            const success = this.chart.goBack();
+            if (success) {
+                this.updateBackButton();
+            }
         });
 
-        // Обработчик клика по фону для возврата к корню
+        // Клик по фону для сброса
         this.elements.sunburstChart.addEventListener('click', (event) => {
-            if (event.target === this.elements.sunburstChart) {
+            if (event.target === this.elements.sunburstChart && this.chart.history.length > 1) {
+                // Сбрасываем к корню
                 this.chart.history = [this.chart.root];
-                this.chart.currentRoot = this.chart.root;
-                this.chart.updateChart();
+                this.chart.currentNode = this.chart.root;
+                this.chart.animateToNode(this.chart.root);
                 this.updateDetails(this.chart.root);
+                this.updateBackButton();
             }
         });
-
-        // Обработчик клавиатуры
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && this.chart.getCurrentDepth() > 0) {
-                this.handleBackClick();
-            }
-        });
-    }
-
-    handleBackClick() {
-        const success = this.chart.goBack();
-        if (success) {
-            this.updateBackButton();
-        }
     }
 
     updateDetails(node) {
-        this.currentNode = node;
+        if (!node) return;
+        
         const nodeInfo = this.chart.getNodeInfo(node);
-        
         let detailsHTML = '';
-        
+
         if (node.depth === 0) {
             detailsHTML = this.createRootDetails(nodeInfo);
         } else if (node.depth === 1) {
@@ -98,30 +87,25 @@ class App {
 
         this.elements.detailsPanel.innerHTML = detailsHTML;
         this.updateBackButton();
-        
-        // Добавляем анимацию появления
-        setTimeout(() => {
-            this.elements.detailsPanel.classList.add('fade-in');
-        }, 50);
     }
 
     createRootDetails(nodeInfo) {
-        const totalRisks = this.calculateTotalMetrics(this.data);
+        const metrics = this.calculateRootMetrics(this.data);
         
         return `
             <div class="details-header">
                 <h2>${nodeInfo.name}</h2>
                 <div class="overview-stats">
                     <div class="stat-item">
-                        <div class="stat-value">${totalRisks.categories}</div>
+                        <div class="stat-value">${metrics.categories}</div>
                         <div class="stat-label">Категорий рисков</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value">${totalRisks.subRisks}</div>
+                        <div class="stat-value">${metrics.subRisks}</div>
                         <div class="stat-label">Типов рисков</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value">${this.formatCurrency(totalRisks.totalValue)}</div>
+                        <div class="stat-value">${this.formatCurrency(metrics.totalValue)}</div>
                         <div class="stat-label">Суммарные потери</div>
                     </div>
                 </div>
@@ -147,7 +131,7 @@ class App {
             
             <div class="metrics-grid">
                 <div class="metric-item">
-                    <div class="metric-value">${metrics.totalValue}</div>
+                    <div class="metric-value">${this.formatCurrency(metrics.totalValue)}</div>
                     <div class="metric-label">Потенциальные потери</div>
                 </div>
                 <div class="metric-item">
@@ -155,12 +139,8 @@ class App {
                     <div class="metric-label">Подриски</div>
                 </div>
                 <div class="metric-item">
-                    <div class="metric-value">${metrics.incidents}</div>
-                    <div class="metric-label">Инциденты</div>
-                </div>
-                <div class="metric-item">
-                    <div class="metric-value">${metrics.coverage}%</div>
-                    <div class="metric-label">Покрытие</div>
+                    <div class="metric-value">${metrics.highRisks}</div>
+                    <div class="metric-label">Высоких рисков</div>
                 </div>
             </div>
 
@@ -172,7 +152,7 @@ class App {
     }
 
     createRiskDetails(nodeInfo, node) {
-        const riskData = node.data.details || this.generateMockRiskDetails(nodeInfo);
+        const riskData = node.data.details || this.generateRiskDetails(nodeInfo);
         
         return `
             <div class="details-header">
@@ -182,7 +162,6 @@ class App {
                 </div>
             </div>
 
-            <!-- Основные метрики -->
             <div class="section">
                 <h3>Основные метрики</h3>
                 <div class="metrics-grid">
@@ -205,7 +184,6 @@ class App {
                 </div>
             </div>
 
-            <!-- Драйверы риска -->
             <div class="section">
                 <h3>Драйверы риска</h3>
                 <div class="hash-tags">
@@ -215,7 +193,6 @@ class App {
                 </div>
             </div>
 
-            <!-- Инциденты -->
             <div class="section">
                 <h3>Инциденты</h3>
                 <div class="incident-stats">
@@ -234,7 +211,6 @@ class App {
                 </ul>
             </div>
 
-            <!-- Покрытие мерами -->
             <div class="section">
                 <h3>Покрытие мерами</h3>
                 <div class="coverage-info">
@@ -247,31 +223,22 @@ class App {
                 </div>
             </div>
 
-            <!-- Инфоповоды -->
-            <div class="section">
-                <h3>Инфоповоды</h3>
-                <div class="info-events">
-                    ${riskData.infoEvents.map(event => 
-                        `<div class="info-event">
-                            <strong>${event.date}</strong>: ${event.description}
-                        </div>`
-                    ).join('')}
-                </div>
-            </div>
-
-            <!-- AI анализ -->
+            ${riskData.aiAnalysis ? `
             <div class="ai-analysis">
                 <h4>🤖 AI Анализ ситуации</h4>
                 <p>${riskData.aiAnalysis.assessment}</p>
                 <p><strong>Рекомендации:</strong> ${riskData.aiAnalysis.recommendations}</p>
             </div>
+            ` : ''}
         `;
     }
 
     createRiskCard(node) {
         const info = this.chart.getNodeInfo(node);
         return `
-            <div class="risk-card ${info.riskLevel}" onclick="app.chart.handleClick(event, ${this.getNodeReference(node)})">
+            <div class="risk-card ${info.riskLevel}" 
+                 onclick="app.chart.handleClick(d3.event, ${this.getNodeReference(node)})"
+                 style="cursor: pointer;">
                 <div class="risk-card-header">
                     <div class="risk-name">${info.name}</div>
                     <div class="risk-level-badge ${info.riskLevel}">
@@ -281,6 +248,67 @@ class App {
                 <div class="risk-value">${this.formatCurrency(info.value || 0)}</div>
             </div>
         `;
+    }
+
+    getNodeReference(node) {
+        // Простая реализация для демонстрации
+        return `app.chart.root${this.getNodePath(node)}`;
+    }
+
+    getNodePath(node) {
+        let path = '';
+        let current = node;
+        const pathArray = [];
+        
+        while (current && current.parent) {
+            const index = current.parent.children.indexOf(current);
+            pathArray.unshift(`.children[${index}]`);
+            current = current.parent;
+        }
+        
+        return pathArray.join('');
+    }
+
+    updateBackButton() {
+        const canGoBack = this.chart && this.chart.history.length > 1;
+        this.elements.backButton.disabled = !canGoBack;
+        
+        if (canGoBack) {
+            const previousNode = this.chart.history[this.chart.history.length - 2];
+            this.elements.backButton.title = `Вернуться к ${previousNode.data.name}`;
+        } else {
+            this.elements.backButton.title = '';
+        }
+    }
+
+    // Вспомогательные методы
+    calculateRootMetrics(data) {
+        const hierarchy = d3.hierarchy(data);
+        let categories = 0;
+        let subRisks = 0;
+        let totalValue = 0;
+
+        hierarchy.each(node => {
+            if (node.depth === 1) categories++;
+            if (node.depth === 2) subRisks++;
+            if (node.data.value) totalValue += node.data.value;
+        });
+
+        return { categories, subRisks, totalValue };
+    }
+
+    calculateCategoryMetrics(node) {
+        let totalValue = 0;
+        let highRisks = 0;
+
+        const traverse = (n) => {
+            if (n.data.value) totalValue += n.data.value;
+            if (n.data.riskLevel === 'high' || n.data.riskLevel === 'very-high') highRisks++;
+            if (n.children) n.children.forEach(traverse);
+        };
+
+        traverse(node);
+        return { totalValue, highRisks };
     }
 
     createRiskDistribution(data) {
@@ -297,73 +325,21 @@ class App {
         `;
     }
 
-    updateBackButton() {
-        const depth = this.chart.getCurrentDepth();
-        this.elements.backButton.disabled = depth === 0;
-        
-        if (depth > 0) {
-            this.elements.backButton.title = `Вернуться к ${this.chart.history[this.chart.history.length - 2].data.name}`;
-        }
-    }
-
-    // Вспомогательные методы
-    calculateTotalMetrics(data) {
-        let categories = 0;
-        let subRisks = 0;
-        let totalValue = 0;
-
-        const traverse = (node) => {
-            if (node.children) {
-                if (node.depth === 0) {
-                    categories = node.children.length;
-                }
-                node.children.forEach(child => {
-                    if (child.value) totalValue += child.value;
-                    if (child.depth === 2) subRisks++;
-                    traverse(child);
-                });
-            }
-        };
-
-        traverse(d3.hierarchy(data));
-        return { categories, subRisks, totalValue };
-    }
-
-    calculateCategoryMetrics(node) {
-        let totalValue = 0;
-        let incidents = 0;
-        let coverage = 0;
-
-        const traverse = (n) => {
-            if (n.data.value) totalValue += n.data.value;
-            if (n.data.details) {
-                incidents += n.data.details.incidents?.total || 0;
-                coverage = Math.max(coverage, n.data.details.coverage?.percentage || 0);
-            }
-            if (n.children) n.children.forEach(traverse);
-        };
-
-        traverse(node);
-        return { totalValue: this.formatCurrency(totalValue), incidents, coverage };
-    }
-
     calculateRiskDistribution(data) {
         const distribution = { 'very-high': 0, 'high': 0, 'medium': 0, 'low': 0 };
+        const hierarchy = d3.hierarchy(data);
         
-        const traverse = (node) => {
-            if (node.riskLevel && distribution.hasOwnProperty(node.riskLevel)) {
-                distribution[node.riskLevel]++;
+        hierarchy.each(node => {
+            if (node.data.riskLevel && distribution.hasOwnProperty(node.data.riskLevel)) {
+                distribution[node.data.riskLevel]++;
             }
-            if (node.children) {
-                node.children.forEach(traverse);
-            }
-        };
+        });
 
-        traverse(data);
         return distribution;
     }
 
     formatCurrency(value) {
+        if (!value) return '0 ₽';
         return new Intl.NumberFormat('ru-RU', {
             style: 'currency',
             currency: 'RUB',
@@ -382,59 +358,37 @@ class App {
         return levels[level] || 'Не определен';
     }
 
-    getNodeReference(node) {
-        // В реальном приложении здесь была бы более сложная логика
-        return `app.chart.root${this.getNodePath(node)}`;
-    }
-
-    getNodePath(node) {
-        let path = '';
-        let current = node;
-        while (current.parent) {
-            const index = current.parent.children.indexOf(current);
-            path = `.children[${index}]${path}`;
-            current = current.parent;
-        }
-        return path;
-    }
-
-    generateMockRiskDetails(nodeInfo) {
-        // Генерация mock данных для демонстрации
-        const riskMultipliers = {
-            'very-high': 10,
-            'high': 5,
-            'medium': 2,
-            'low': 1
+    generateRiskDetails(nodeInfo) {
+        const multipliers = {
+            'very-high': 3,
+            'high': 2,
+            'medium': 1,
+            'low': 0.5
         };
 
-        const multiplier = riskMultipliers[nodeInfo.riskLevel] || 1;
+        const multiplier = multipliers[nodeInfo.riskLevel] || 1;
 
         return {
-            directLosses: 500000 * multiplier,
-            indirectLosses: 250000 * multiplier,
-            riskLimit: 2000000 * multiplier,
-            forecast: 750000 * multiplier,
-            drivers: ['регуляторика', 'технологии', 'персонал', 'внешняя_среда'].slice(0, 2 + multiplier),
+            directLosses: nodeInfo.value * 0.6,
+            indirectLosses: nodeInfo.value * 0.4,
+            riskLimit: nodeInfo.value * 2,
+            forecast: nodeInfo.value * 0.8,
+            drivers: ['регуляторика', 'технологии', 'персонал'].slice(0, 1 + multiplier),
             incidents: {
-                total: 15 * multiplier,
+                total: Math.floor(10 * multiplier),
                 top: [
-                    { name: 'Сбой системы', frequency: '12 раз' },
-                    { name: 'Ошибка оператора', frequency: '8 раз' },
-                    { name: 'Внешняя атака', frequency: '5 раз' }
+                    { name: 'Типовой инцидент 1', frequency: `${Math.floor(5 * multiplier)} раз` },
+                    { name: 'Типовой инцидент 2', frequency: `${Math.floor(3 * multiplier)} раз` }
                 ]
             },
             coverage: {
-                percentage: Math.min(80 + (multiplier * 5), 95),
-                covered: 8 * multiplier,
-                total: 10 * multiplier
+                percentage: Math.max(30, 80 - (multiplier * 10)),
+                covered: Math.floor(8 * multiplier),
+                total: Math.floor(10 * multiplier)
             },
-            infoEvents: [
-                { date: '2024-01-15', description: 'Изменения в законодательстве' },
-                { date: '2024-01-10', description: 'Техническое обновление системы' }
-            ],
             aiAnalysis: {
-                assessment: 'Уровень риска требует повышенного внимания. Наблюдается рост частоты инцидентов.',
-                recommendations: 'Усилить мониторинг, провести тренинг сотрудников, обновить процедуры контроля.'
+                assessment: `Уровень риска требует ${nodeInfo.riskLevel === 'high' || nodeInfo.riskLevel === 'very-high' ? 'повышенного' : 'стандартного'} внимания.`,
+                recommendations: 'Рекомендуется регулярный мониторинг и обновление процедур контроля.'
             }
         };
     }
@@ -442,15 +396,13 @@ class App {
     showError(message) {
         this.elements.detailsPanel.innerHTML = `
             <div class="error-message">
-                <h3>Ошибка</h3>
+                <h3>⚠️ Внимание</h3>
                 <p>${message}</p>
-                <button onclick="app.init()">Повторить попытку</button>
             </div>
         `;
     }
 
     getFallbackData() {
-        // Возвращаем базовую структуру данных для демонстрации
         return {
             "name": "Операционные риски",
             "riskLevel": "medium",
@@ -459,19 +411,18 @@ class App {
                 {
                     "name": "Законы",
                     "riskLevel": "high",
-                    "value": 2000000,
+                    "value": 3000000,
                     "children": [
-                        {"name": "Правовые риски", "riskLevel": "high", "value": 1200000},
-                        {"name": "Регуляторные риски", "riskLevel": "medium", "value": 600000},
-                        {"name": "Риски информационной безопасности", "riskLevel": "high", "value": 200000}
+                        {"name": "Правовые риски", "riskLevel": "high", "value": 2000000},
+                        {"name": "Регуляторные риски", "riskLevel": "medium", "value": 1000000}
                     ]
                 },
                 {
-                    "name": "ИТ",
-                    "riskLevel": "medium", 
-                    "value": 1500000,
+                    "name": "ИТ", 
+                    "riskLevel": "medium",
+                    "value": 2000000,
                     "children": [
-                        {"name": "Технологические риски", "riskLevel": "medium", "value": 1500000}
+                        {"name": "Технологические риски", "riskLevel": "medium", "value": 2000000}
                     ]
                 }
             ]
@@ -479,7 +430,7 @@ class App {
     }
 }
 
-// Инициализация приложения после загрузки DOM
+// Инициализация приложения
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new App();
 });
