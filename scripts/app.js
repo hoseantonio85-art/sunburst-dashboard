@@ -49,8 +49,8 @@ class App {
                             indirectLosses: 80000,
                             limit: 500000,
                             forecast: 200000,
-                            drivers: ["Изменение законодательства", "Судебные разбирательства"],
-                            hashtags: ["#закон", "#суд", "#регулятор"],
+                            drivers: ["Изменение законодательства", "Судебные разбирательства", "Нормативные требования"],
+                            hashtags: ["#закон", "#суд", "#регулятор", "#compliance"],
                             incidentCount: 5,
                             topIncidents: [
                                 { name: "Судебный иск от клиента", count: 2 },
@@ -61,19 +61,57 @@ class App {
                             totalRisks: 25,
                             infoEvents: [
                                 "Принятие нового закона о налогах",
-                                "Изменение в регулировании банковской деятельности"
+                                "Изменение в регулировании банковской деятельности",
+                                "Ужесточение требований ЦБ"
                             ],
-                            aiConclusion: "Высокий уровень правовых рисков due to ужесточение законодательства и увеличение судебных разбирательств. Рекомендуется усилить compliance-контроль."
+                            aiConclusion: "Высокий уровень правовых рисков due to ужесточение законодательства и увеличение судебных разбирательств. Рекомендуется усилить compliance-контроль и провести аудит договорной работы."
                         },
                         { 
                             name: "Регуляторные риски", 
                             value: 150000, 
-                            riskLevel: "medium" 
+                            riskLevel: "medium",
+                            directLosses: 90000,
+                            indirectLosses: 60000,
+                            limit: 300000,
+                            forecast: 120000,
+                            drivers: ["Изменение нормативной базы", "Проверки регуляторов"],
+                            hashtags: ["#регулятор", "#проверка", "#отчетность"],
+                            incidentCount: 3,
+                            topIncidents: [
+                                { name: "Нарушение отчетности", count: 2 },
+                                { name: "Замечания регулятора", count: 1 }
+                            ],
+                            coveredRisks: 12,
+                            totalRisks: 18,
+                            infoEvents: [
+                                "Плановые проверки регулятора в Q3",
+                                "Изменение форм отчетности"
+                            ],
+                            aiConclusion: "Средний уровень регуляторных рисков. Необходимо актуализировать процедуры compliance и подготовиться к предстоящим проверкам."
                         },
                         { 
                             name: "Риски ИБ", 
                             value: 120000, 
-                            riskLevel: "high" 
+                            riskLevel: "high",
+                            directLosses: 80000,
+                            indirectLosses: 40000,
+                            limit: 250000,
+                            forecast: 150000,
+                            drivers: ["Кибератаки", "Утечки данных", "Несоблюдение политик ИБ"],
+                            hashtags: ["#кибербезопасность", "#данные", "#комплаенс"],
+                            incidentCount: 7,
+                            topIncidents: [
+                                { name: "Попытка фишинга", count: 3 },
+                                { name: "Нарушение политики ИБ", count: 2 },
+                                { name: "Утечка данных", count: 2 }
+                            ],
+                            coveredRisks: 18,
+                            totalRisks: 22,
+                            infoEvents: [
+                                "Рост целевых кибератак в финансовом секторе",
+                                "Новые требования по защите персональных данных"
+                            ],
+                            aiConclusion: "Высокий уровень рисков ИБ. Требуется усиление мер защиты, регулярное обучение сотрудников и обновление систем безопасности."
                         }
                     ]
                 },
@@ -90,8 +128,8 @@ class App {
                             indirectLosses: 130000,
                             limit: 400000,
                             forecast: 250000,
-                            drivers: ["Устаревшая инфраструктура", "Кибератаки"],
-                            hashtags: ["#ИТ", "#кибербезопасность", "инфраструктура"],
+                            drivers: ["Устаревшая инфраструктура", "Кибератаки", "Сбои оборудования"],
+                            hashtags: ["#ИТ", "#кибербезопасность", "#инфраструктура", "#сбои"],
                             incidentCount: 8,
                             topIncidents: [
                                 { name: "Сбой системы", count: 3 },
@@ -102,9 +140,10 @@ class App {
                             totalRisks: 35,
                             infoEvents: [
                                 "Рост кибератак в отрасли",
-                                "Внедрение новых технологических стандартов"
+                                "Внедрение новых технологических стандартов",
+                                "Плановое обновление ИТ-инфраструктуры"
                             ],
-                            aiConclusion: "Средний уровень технологических рисков. Необходимо обновить ИТ-инфраструктуру и усилить меры кибербезопасности."
+                            aiConclusion: "Средний уровень технологических рисков. Необходимо обновить ИТ-инфраструктуру, усилить меры кибербезопасности и разработать план аварийного восстановления."
                         }
                     ]
                 },
@@ -116,12 +155,50 @@ class App {
                         { 
                             name: "Риски внешнего мошенничества", 
                             value: 300000, 
-                            riskLevel: "high" 
+                            riskLevel: "high",
+                            directLosses: 200000,
+                            indirectLosses: 100000,
+                            limit: 600000,
+                            forecast: 350000,
+                            drivers: ["Финансовое мошенничество", "Кража идентичности", "Социальная инженерия"],
+                            hashtags: ["#мошенничество", "#клиенты", "#безопасность"],
+                            incidentCount: 12,
+                            topIncidents: [
+                                { name: "Финанговое мошенничество", count: 5 },
+                                { name: "Кража учетных данных", count: 4 },
+                                { name: "Социальная инженерия", count: 3 }
+                            ],
+                            coveredRisks: 25,
+                            totalRisks: 40,
+                            infoEvents: [
+                                "Рост случаев мошенничества с использованием социальной инженерии",
+                                "Новые схемы финансового мошенничества"
+                            ],
+                            aiConclusion: "Критический уровень рисков внешнего мошенничества. Требуется внедрение продвинутых систем обнаружения и обучение клиентов."
                         },
                         { 
                             name: "Риски клиентов", 
                             value: 220000, 
-                            riskLevel: "medium" 
+                            riskLevel: "medium",
+                            directLosses: 120000,
+                            indirectLosses: 100000,
+                            limit: 350000,
+                            forecast: 200000,
+                            drivers: ["Недовольство клиентов", "Репутационные потери", "Отток клиентов"],
+                            hashtags: ["#клиенты", "#удовлетворенность", "#репутация"],
+                            incidentCount: 6,
+                            topIncidents: [
+                                { name: "Жалобы клиентов", count: 3 },
+                                { name: "Потеря ключевых клиентов", count: 2 },
+                                { name: "Репутационный инцидент", count: 1 }
+                            ],
+                            coveredRisks: 15,
+                            totalRisks: 25,
+                            infoEvents: [
+                                "Изменение предпочтений клиентов",
+                                "Рост ожиданий по качеству обслуживания"
+                            ],
+                            aiConclusion: "Средний уровень рисков клиентов. Рекомендуется улучшение сервиса и внедрение программы лояльности."
                         }
                     ]
                 },
@@ -130,9 +207,21 @@ class App {
                     riskLevel: "medium",
                     value: 190000,
                     children: [
-                        { name: "Риски контрагентов", value: 80000, riskLevel: "medium" },
-                        { name: "Риски цепочки поставок", value: 70000, riskLevel: "low" },
-                        { name: "Товарные риски", value: 40000, riskLevel: "medium" }
+                        { 
+                            name: "Риски контрагентов", 
+                            value: 80000, 
+                            riskLevel: "medium" 
+                        },
+                        { 
+                            name: "Риски цепочки поставок", 
+                            value: 70000, 
+                            riskLevel: "low" 
+                        },
+                        { 
+                            name: "Товарные риски", 
+                            value: 40000, 
+                            riskLevel: "medium" 
+                        }
                     ]
                 },
                 {
@@ -140,7 +229,11 @@ class App {
                     riskLevel: "low",
                     value: 90000,
                     children: [
-                        { name: "Репутационные риски", value: 90000, riskLevel: "low" }
+                        { 
+                            name: "Репутационные риски", 
+                            value: 90000, 
+                            riskLevel: "low" 
+                        }
                     ]
                 },
                 {
@@ -148,7 +241,11 @@ class App {
                     riskLevel: "medium",
                     value: 210000,
                     children: [
-                        { name: "Процессные риски", value: 210000, riskLevel: "medium" }
+                        { 
+                            name: "Процессные риски", 
+                            value: 210000, 
+                            riskLevel: "medium" 
+                        }
                     ]
                 },
                 {
@@ -156,8 +253,16 @@ class App {
                     riskLevel: "high",
                     value: 380000,
                     children: [
-                        { name: "Риски внутреннего мошенничества", value: 220000, riskLevel: "high" },
-                        { name: "Риски персонала", value: 160000, riskLevel: "medium" }
+                        { 
+                            name: "Риски внутреннего мошенничества", 
+                            value: 220000, 
+                            riskLevel: "high" 
+                        },
+                        { 
+                            name: "Риски персонала", 
+                            value: 160000, 
+                            riskLevel: "medium" 
+                        }
                     ]
                 },
                 {
@@ -165,9 +270,21 @@ class App {
                     riskLevel: "low",
                     value: 110000,
                     children: [
-                        { name: "Природные риски", value: 50000, riskLevel: "low" },
-                        { name: "Техногенные риски", value: 40000, riskLevel: "medium" },
-                        { name: "Риски физической безопасности", value: 20000, riskLevel: "low" }
+                        { 
+                            name: "Природные риски", 
+                            value: 50000, 
+                            riskLevel: "low" 
+                        },
+                        { 
+                            name: "Техногенные риски", 
+                            value: 40000, 
+                            riskLevel: "medium" 
+                        },
+                        { 
+                            name: "Риски физической безопасности", 
+                            value: 20000, 
+                            riskLevel: "low" 
+                        }
                     ]
                 },
                 {
@@ -175,7 +292,11 @@ class App {
                     riskLevel: "medium",
                     value: 175000,
                     children: [
-                        { name: "Проектные риски", value: 175000, riskLevel: "medium" }
+                        { 
+                            name: "Проектные риски", 
+                            value: 175000, 
+                            riskLevel: "medium" 
+                        }
                     ]
                 }
             ]
@@ -189,10 +310,12 @@ class App {
         // Настраиваем обработчик кликов
         this.chart.onSegmentClick((segment) => {
             this.updateDetails(segment);
+            this.updateBackButtonState();
         });
         
         // Первоначальное обновление деталей
         this.updateDetails(this.chart.root);
+        this.updateBackButtonState();
     }
 
     updateDetails(segment) {
@@ -399,10 +522,23 @@ class App {
         }
     }
 
+    updateBackButtonState() {
+        const backButton = document.getElementById('back-btn');
+        // Кнопка активна, если есть куда возвращаться (история больше 1 элемента)
+        if (this.chart.history.length > 1) {
+            backButton.style.opacity = '1';
+            backButton.style.cursor = 'pointer';
+        } else {
+            backButton.style.opacity = '0.5';
+            backButton.style.cursor = 'not-allowed';
+        }
+    }
+
     setupEventHandlers() {
         document.getElementById('back-btn').addEventListener('click', () => {
-            this.chart.resetZoom();
-            this.updateDetails(this.chart.root);
+            if (this.chart.history.length > 1) {
+                this.chart.goBack();
+            }
         });
     }
 
