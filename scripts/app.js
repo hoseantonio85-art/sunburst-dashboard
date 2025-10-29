@@ -69,49 +69,12 @@ class App {
                         { 
                             name: "Регуляторные риски", 
                             value: 150000, 
-                            riskLevel: "medium",
-                            directLosses: 90000,
-                            indirectLosses: 60000,
-                            limit: 300000,
-                            forecast: 120000,
-                            drivers: ["Изменение нормативной базы", "Проверки регуляторов"],
-                            hashtags: ["#регулятор", "#проверка", "#отчетность"],
-                            incidentCount: 3,
-                            topIncidents: [
-                                { name: "Нарушение отчетности", count: 2 },
-                                { name: "Замечания регулятора", count: 1 }
-                            ],
-                            coveredRisks: 12,
-                            totalRisks: 18,
-                            infoEvents: [
-                                "Плановые проверки регулятора в Q3",
-                                "Изменение форм отчетности"
-                            ],
-                            aiConclusion: "Средний уровень регуляторных рисков. Необходимо актуализировать процедуры compliance и подготовиться к предстоящим проверкам."
+                            riskLevel: "medium" 
                         },
                         { 
                             name: "Риски ИБ", 
                             value: 120000, 
-                            riskLevel: "high",
-                            directLosses: 80000,
-                            indirectLosses: 40000,
-                            limit: 250000,
-                            forecast: 150000,
-                            drivers: ["Кибератаки", "Утечки данных", "Несоблюдение политик ИБ"],
-                            hashtags: ["#кибербезопасность", "#данные", "#комплаенс"],
-                            incidentCount: 7,
-                            topIncidents: [
-                                { name: "Попытка фишинга", count: 3 },
-                                { name: "Нарушение политики ИБ", count: 2 },
-                                { name: "Утечка данных", count: 2 }
-                            ],
-                            coveredRisks: 18,
-                            totalRisks: 22,
-                            infoEvents: [
-                                "Рост целевых кибератак в финансовом секторе",
-                                "Новые требования по защите персональных данных"
-                            ],
-                            aiConclusion: "Высокий уровень рисков ИБ. Требуется усиление мер защиты, регулярное обучение сотрудников и обновление систем безопасности."
+                            riskLevel: "high" 
                         }
                     ]
                 },
@@ -123,27 +86,7 @@ class App {
                         { 
                             name: "Технологические риски", 
                             value: 280000, 
-                            riskLevel: "medium",
-                            directLosses: 150000,
-                            indirectLosses: 130000,
-                            limit: 400000,
-                            forecast: 250000,
-                            drivers: ["Устаревшая инфраструктура", "Кибератаки", "Сбои оборудования"],
-                            hashtags: ["#ИТ", "#кибербезопасность", "#инфраструктура", "#сбои"],
-                            incidentCount: 8,
-                            topIncidents: [
-                                { name: "Сбой системы", count: 3 },
-                                { name: "Кибератака", count: 2 },
-                                { name: "Потеря данных", count: 3 }
-                            ],
-                            coveredRisks: 20,
-                            totalRisks: 35,
-                            infoEvents: [
-                                "Рост кибератак в отрасли",
-                                "Внедрение новых технологических стандартов",
-                                "Плановое обновление ИТ-инфраструктуры"
-                            ],
-                            aiConclusion: "Средний уровень технологических рисков. Необходимо обновить ИТ-инфраструктуру, усилить меры кибербезопасности и разработать план аварийного восстановления."
+                            riskLevel: "medium" 
                         }
                     ]
                 },
@@ -155,146 +98,11 @@ class App {
                         { 
                             name: "Риски внешнего мошенничества", 
                             value: 300000, 
-                            riskLevel: "high",
-                            directLosses: 200000,
-                            indirectLosses: 100000,
-                            limit: 600000,
-                            forecast: 350000,
-                            drivers: ["Финансовое мошенничество", "Кража идентичности", "Социальная инженерия"],
-                            hashtags: ["#мошенничество", "#клиенты", "#безопасность"],
-                            incidentCount: 12,
-                            topIncidents: [
-                                { name: "Финанговое мошенничество", count: 5 },
-                                { name: "Кража учетных данных", count: 4 },
-                                { name: "Социальная инженерия", count: 3 }
-                            ],
-                            coveredRisks: 25,
-                            totalRisks: 40,
-                            infoEvents: [
-                                "Рост случаев мошенничества с использованием социальной инженерии",
-                                "Новые схемы финансового мошенничества"
-                            ],
-                            aiConclusion: "Критический уровень рисков внешнего мошенничества. Требуется внедрение продвинутых систем обнаружения и обучение клиентов."
+                            riskLevel: "high" 
                         },
                         { 
                             name: "Риски клиентов", 
                             value: 220000, 
-                            riskLevel: "medium",
-                            directLosses: 120000,
-                            indirectLosses: 100000,
-                            limit: 350000,
-                            forecast: 200000,
-                            drivers: ["Недовольство клиентов", "Репутационные потери", "Отток клиентов"],
-                            hashtags: ["#клиенты", "#удовлетворенность", "#репутация"],
-                            incidentCount: 6,
-                            topIncidents: [
-                                { name: "Жалобы клиентов", count: 3 },
-                                { name: "Потеря ключевых клиентов", count: 2 },
-                                { name: "Репутационный инцидент", count: 1 }
-                            ],
-                            coveredRisks: 15,
-                            totalRisks: 25,
-                            infoEvents: [
-                                "Изменение предпочтений клиентов",
-                                "Рост ожиданий по качеству обслуживания"
-                            ],
-                            aiConclusion: "Средний уровень рисков клиентов. Рекомендуется улучшение сервиса и внедрение программы лояльности."
-                        }
-                    ]
-                },
-                {
-                    name: "Партнеры",
-                    riskLevel: "medium",
-                    value: 190000,
-                    children: [
-                        { 
-                            name: "Риски контрагентов", 
-                            value: 80000, 
-                            riskLevel: "medium" 
-                        },
-                        { 
-                            name: "Риски цепочки поставок", 
-                            value: 70000, 
-                            riskLevel: "low" 
-                        },
-                        { 
-                            name: "Товарные риски", 
-                            value: 40000, 
-                            riskLevel: "medium" 
-                        }
-                    ]
-                },
-                {
-                    name: "Новости",
-                    riskLevel: "low",
-                    value: 90000,
-                    children: [
-                        { 
-                            name: "Репутационные риски", 
-                            value: 90000, 
-                            riskLevel: "low" 
-                        }
-                    ]
-                },
-                {
-                    name: "Процессы",
-                    riskLevel: "medium",
-                    value: 210000,
-                    children: [
-                        { 
-                            name: "Процессные риски", 
-                            value: 210000, 
-                            riskLevel: "medium" 
-                        }
-                    ]
-                },
-                {
-                    name: "Сотрудники",
-                    riskLevel: "high",
-                    value: 380000,
-                    children: [
-                        { 
-                            name: "Риски внутреннего мошенничества", 
-                            value: 220000, 
-                            riskLevel: "high" 
-                        },
-                        { 
-                            name: "Риски персонала", 
-                            value: 160000, 
-                            riskLevel: "medium" 
-                        }
-                    ]
-                },
-                {
-                    name: "Внешние факторы",
-                    riskLevel: "low",
-                    value: 110000,
-                    children: [
-                        { 
-                            name: "Природные риски", 
-                            value: 50000, 
-                            riskLevel: "low" 
-                        },
-                        { 
-                            name: "Техногенные риски", 
-                            value: 40000, 
-                            riskLevel: "medium" 
-                        },
-                        { 
-                            name: "Риски физической безопасности", 
-                            value: 20000, 
-                            riskLevel: "low" 
-                        }
-                    ]
-                },
-                {
-                    name: "Проекты",
-                    riskLevel: "medium",
-                    value: 175000,
-                    children: [
-                        { 
-                            name: "Проектные риски", 
-                            value: 175000, 
                             riskLevel: "medium" 
                         }
                     ]
@@ -310,12 +118,12 @@ class App {
         // Настраиваем обработчик кликов
         this.chart.onSegmentClick((segment) => {
             this.updateDetails(segment);
-            this.updateBackButtonState();
+            this.updateBackButton();
         });
         
         // Первоначальное обновление деталей
         this.updateDetails(this.chart.root);
-        this.updateBackButtonState();
+        this.updateBackButton();
     }
 
     updateDetails(segment) {
@@ -403,35 +211,6 @@ class App {
             const coveragePercent = riskData.coveredRisks && riskData.totalRisks ? 
                 Math.round((riskData.coveredRisks / riskData.totalRisks) * 100) : 0;
 
-            // Генерация инцидентов
-            let incidentsHTML = '';
-            if (riskData.topIncidents) {
-                riskData.topIncidents.forEach(incident => {
-                    incidentsHTML += `
-                        <div class="incident-item">
-                            <strong>${incident.name}</strong>
-                            <div style="color: #6c757d; font-size: 0.8rem;">${incident.count} инцидентов</div>
-                        </div>
-                    `;
-                });
-            }
-
-            // Генерация хештегов
-            let hashtagsHTML = '';
-            if (riskData.hashtags) {
-                riskData.hashtags.forEach(tag => {
-                    hashtagsHTML += `<span class="hashtag">${tag}</span>`;
-                });
-            }
-
-            // Генерация инфоповодов
-            let infoEventsHTML = '';
-            if (riskData.infoEvents) {
-                riskData.infoEvents.forEach(event => {
-                    infoEventsHTML += `<div class="info-item">${event}</div>`;
-                });
-            }
-
             detailsContent.innerHTML = `
                 <div class="risk-card ${riskLevel}">
                     <div class="risk-header">
@@ -448,20 +227,8 @@ class App {
                     
                     <div class="risk-metrics">
                         <div class="metric">
-                            <span class="metric-value">${d3.format(",d")(riskData.directLosses || 0)}₽</span>
-                            <span class="metric-label">Прямые потери</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-value">${d3.format(",d")(riskData.indirectLosses || 0)}₽</span>
-                            <span class="metric-label">Косвенные потери</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-value">${d3.format(",d")(riskData.limit || 0)}₽</span>
-                            <span class="metric-label">Лимит риска</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-value">${d3.format(",d")(riskData.forecast || 0)}₽</span>
-                            <span class="metric-label">Прогноз</span>
+                            <span class="metric-value">${d3.format(",d")(riskData.value || 0)}₽</span>
+                            <span class="metric-label">Потенциальные потери</span>
                         </div>
                     </div>
                     
@@ -473,71 +240,34 @@ class App {
                         </div>
                     </div>
                     ` : ''}
-                    
-                    ${hashtagsHTML ? `
-                    <div class="drivers-section">
-                        <div class="section-title">Хештеги инцидентов</div>
-                        <div class="hashtags">${hashtagsHTML}</div>
-                    </div>
-                    ` : ''}
-                    
-                    ${riskData.incidentCount ? `
-                    <div class="incidents-section">
-                        <div class="section-title">
-                            Инциденты (всего: ${riskData.incidentCount})
-                        </div>
-                        ${incidentsHTML}
-                    </div>
-                    ` : ''}
-                    
-                    ${coveragePercent > 0 ? `
-                    <div class="coverage-section">
-                        <div class="section-title">
-                            Покрытие мерами (${riskData.coveredRisks}/${riskData.totalRisks})
-                        </div>
-                        <div class="coverage-progress">
-                            <div class="coverage-bar" style="width: ${coveragePercent}%"></div>
-                        </div>
-                        <div style="text-align: center; color: #28a745; font-weight: 600;">
-                            ${coveragePercent}% покрыто
-                        </div>
-                    </div>
-                    ` : ''}
-                    
-                    ${infoEventsHTML ? `
-                    <div class="info-section">
-                        <div class="section-title">Влияющие инфоповоды</div>
-                        ${infoEventsHTML}
-                    </div>
-                    ` : ''}
-                    
-                    ${riskData.aiConclusion ? `
-                    <div class="ai-section">
-                        <div class="section-title">Анализ AI</div>
-                        <div class="ai-conclusion">${riskData.aiConclusion}</div>
-                    </div>
-                    ` : ''}
                 </div>
             `;
         }
     }
 
-    updateBackButtonState() {
+    updateBackButton() {
         const backButton = document.getElementById('back-btn');
-        // Кнопка активна, если есть куда возвращаться (история больше 1 элемента)
-        if (this.chart.history.length > 1) {
+        const canGoBack = this.chart.history.length > 1;
+        
+        if (canGoBack) {
             backButton.style.opacity = '1';
             backButton.style.cursor = 'pointer';
+            backButton.disabled = false;
         } else {
             backButton.style.opacity = '0.5';
             backButton.style.cursor = 'not-allowed';
+            backButton.disabled = true;
         }
     }
 
     setupEventHandlers() {
-        document.getElementById('back-btn').addEventListener('click', () => {
-            if (this.chart.history.length > 1) {
-                this.chart.goBack();
+        const backButton = document.getElementById('back-btn');
+        
+        backButton.addEventListener('click', () => {
+            const success = this.chart.goBack();
+            if (success) {
+                this.updateDetails(this.chart.currentRoot);
+                this.updateBackButton();
             }
         });
     }
