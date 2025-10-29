@@ -350,3 +350,45 @@ body {
     color: #856404;
     margin-bottom: 10px;
 }
+
+/* Стили для новой анимированной sunburst диаграммы */
+.sunburst-container svg {
+    max-width: 100%;
+    height: auto;
+}
+
+.sunburst-container path {
+    transition: fill-opacity 0.3s ease;
+}
+
+.sunburst-container text {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    pointer-events: none;
+}
+
+/* Улучшение видимости меток на темном фоне */
+.sunburst-container text {
+    paint-order: stroke;
+    stroke: white;
+    stroke-width: 3px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Анимация при hover */
+.sunburst-container path:hover {
+    fill-opacity: 1 !important;
+    stroke: #2c3e50;
+    stroke-width: 2px;
+}
+
+/* Центральный круг для навигации */
+.sunburst-container circle {
+    transition: r 0.3s ease;
+}
+
+.sunburst-container circle:hover {
+    r: 105%;
+    stroke: #3498db;
+    stroke-width: 2px;
+}
