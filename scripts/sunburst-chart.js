@@ -3,17 +3,15 @@ class SunburstChart {
         this.container = container;
         this.data = data;
         this.currentRoot = null;
-        this.history = []; // Массив для хранения истории навигации
+        this.history = [];
         this.init();
     }
 
     init() {
-        // Размеры и радиус
         const width = 800;
         const height = width;
         const radius = width / 6;
 
-        // Вычисляем иерархию
         const hierarchy = d3.hierarchy(this.data)
             .sum(d => d.value || 0)
             .sort((a, b) => b.value - a.value);
@@ -24,9 +22,8 @@ class SunburstChart {
         
         this.root.each(d => d.current = d);
         this.currentRoot = this.root;
-        this.history = [this.root]; // Инициализируем историю с корневым элементом
+        this.history = [this.root];
 
-        // Создаем генератор дуг
         this.arc = d3.arc()
             .startAngle(d => d.x0)
             .endAngle(d => d.x1)
@@ -35,46 +32,52 @@ class SunburstChart {
             .innerRadius(d => d.y0 * radius)
             .outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1));
 
-        // Создаем SVG контейнер
         this.svg = d3.select(this.container)
+            .html('') // Очищаем контейнер
             .append("svg")
             .attr("viewBox", [-width / 2, -height / 2, width, width])
             .style("font", "12px sans-serif")
             .style("max-width", "100%")
             .style("height", "auto");
 
-        // Группа для путей
         this.pathGroup = this.svg.append("g");
+        this.labelGroup = this.svg.append("g")
+            .attr("pointer-events", "none")
+            .attr("text-anchor", "middle")
+            .style("user-select", "none");
 
-        // Добавляем дуги
         this.updateChart();
 
-        // Добавляем родительский круг для клика
         this.parent = this.svg.append("circle")
             .datum(this.root)
             .attr("r", radius)
             .attr("fill", "none")
             .attr("pointer-events", "all")
-            .on("click", (event) => this.navigateTo(this.root));
+            .on("click", (event) => this.handleClick(event, this.root));
     }
 
     getRiskColor(riskLevel) {
         const colors = {
-            'very-high': '#8B0000',     // Темно-красный
-            'high': '#FF4444',          // Красный
-            'medium': '#FFAA00',        // Желтый
-            'low': '#CCCCCC'            // Серый
+            'very-high': '#8B0000',
+            'high': '#FF4444',
+            'medium': '#FFAA00',
+            'low': '#CCCCCC'
         };
         return colors[riskLevel] || '#CCCCCC';
     }
 
     updateChart() {
+        const that = this;
+
         // Обновляем пути
         const path = this.pathGroup
             .selectAll("path")
             .data(this.root.descendants().slice(1))
             .join("path")
             .attr("fill", d => {
+                if (d.depth === 1) {
+                    return this.getRiskColor(d.data.riskLevel || 'low');
+                }
                 return this.getRiskColor(d.data.riskLevel || 'low');
             })
             .attr("fill-opacity", d => this.arcVisible(d.current) ? (d.children ? 0.8 : 0.7) : 0)
@@ -83,17 +86,16 @@ class SunburstChart {
             .attr("pointer-events", d => this.arcVisible(d.current) ? "auto" : "none")
             .attr("d", d => this.arc(d.current));
 
-        // Делаем кликабельными элементы с детьми
         path.filter(d => d.children)
             .style("cursor", "pointer")
-            .on("click", (event, d) => this.navigateTo(d));
+            .on("click", (event, d) => this.handleClick(event, d));
 
-        // Добавляем title
         path.append("title")
             .text(d => `${d.ancestors().map(d => d.data.name).reverse().join(" → ")}\nУровень риска: ${this.getRiskLevelText(d.data.riskLevel)}\nПотери: ${d3.format(",d")(d.value || 0)}₽`);
 
-        // Обновляем метки
-        const label = this.svg.selectAll("text")
+        // Обновляем метки - ПОКАЗЫВАЕМ ТОЛЬКО ПЕРВЫЙ УРОВЕНЬ
+        const label = this.labelGroup
+            .selectAll("text")
             .data(this.root.descendants().slice(1))
             .join("text")
             .attr("dy", "0.35em")
@@ -106,12 +108,6 @@ class SunburstChart {
                 const riskLevel = d.data.riskLevel;
                 return (riskLevel === 'very-high' || riskLevel === 'high') ? 'white' : '#2c3e50';
             });
-
-        // Удаляем старые метки
-        this.svg.selectAll("text")
-            .data(this.root.descendants().slice(1))
-            .exit()
-            .remove();
     }
 
     getRiskLevelText(riskLevel) {
@@ -124,8 +120,8 @@ class SunburstChart {
         return levels[riskLevel] || 'Не определен';
     }
 
-    navigateTo(p) {
-        // Добавляем в историю только если это новый элемент
+    handleClick(event, p) {
+        // Добавляем в историю только если переходим к новому узлу
         if (this.currentRoot !== p) {
             this.history.push(p);
         }
@@ -150,22 +146,21 @@ class SunburstChart {
                 return t => d.current = i(t);
             })
             .filter(function(d) {
-                return +this.getAttribute("fill-opacity") || this.arcVisible(d.target);
+                return +this.getAttribute("fill-opacity") || that.arcVisible(d.target);
             })
-            .attr("fill-opacity", d => this.arcVisible(d.target) ? (d.children ? 0.8 : 0.7) : 0)
-            .attr("pointer-events", d => this.arcVisible(d.target) ? "auto" : "none")
-            .attrTween("d", d => () => this.arc(d.current));
+            .attr("fill-opacity", d => that.arcVisible(d.target) ? (d.children ? 0.8 : 0.7) : 0)
+            .attr("pointer-events", d => that.arcVisible(d.target) ? "auto" : "none")
+            .attrTween("d", d => () => that.arc(d.current));
 
         // Анимация меток
-        this.svg.selectAll("text")
+        this.labelGroup.selectAll("text")
             .filter(function(d) {
-                return +this.getAttribute("fill-opacity") || this.labelVisible(d.target);
+                return +this.getAttribute("fill-opacity") || that.labelVisible(d.target);
             })
             .transition(t)
-            .attr("fill-opacity", d => +this.labelVisible(d.target))
-            .attrTween("transform", d => () => this.labelTransform(d.current));
+            .attr("fill-opacity", d => +that.labelVisible(d.target))
+            .attrTween("transform", d => () => that.labelTransform(d.current));
 
-        // Вызываем callback для обновления деталей
         if (this.onClickCallback) {
             this.onClickCallback(p);
         }
@@ -173,11 +168,11 @@ class SunburstChart {
 
     goBack() {
         if (this.history.length > 1) {
-            // Удаляем текущее состояние из истории
+            // Удаляем текущий элемент из истории
             this.history.pop();
-            // Берем предыдущее состояние
+            // Берем предыдущий
             const previous = this.history[this.history.length - 1];
-            this.navigateTo(previous);
+            this.handleClick(null, previous);
             return true;
         }
         return false;
@@ -188,7 +183,8 @@ class SunburstChart {
     }
 
     labelVisible(d) {
-        return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
+        // ПОКАЗЫВАЕМ ТОЛЬКО ПЕРВЫЙ УРОВЕНЬ (depth === 1)
+        return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03 && d.depth === 1;
     }
 
     labelTransform(d) {
