@@ -3,6 +3,7 @@ class SunburstChart {
         this.container = container;
         this.data = data;
         this.currentRoot = null;
+        this.history = []; // Массив для хранения истории навигации
         this.init();
     }
 
@@ -23,6 +24,7 @@ class SunburstChart {
         
         this.root.each(d => d.current = d);
         this.currentRoot = this.root;
+        this.history.push(this.root); // Добавляем корень в историю
 
         // Создаем генератор дуг
         this.arc = d3.arc()
@@ -130,6 +132,11 @@ class SunburstChart {
     }
 
     clicked(event, p) {
+        // Добавляем текущее состояние в историю перед переходом
+        if (this.currentRoot !== p) {
+            this.history.push(p);
+        }
+        
         this.currentRoot = p;
         
         // Обновляем данные для анимации
@@ -171,6 +178,19 @@ class SunburstChart {
         }
     }
 
+    goBack() {
+        if (this.history.length > 1) {
+            // Удаляем текущее состояние из истории
+            this.history.pop();
+            // Берем предыдущее состояние
+            const previous = this.history[this.history.length - 1];
+            this.clicked(null, previous);
+        } else {
+            // Если история пуста, возвращаемся к корню
+            this.clicked(null, this.root);
+        }
+    }
+
     arcVisible(d) {
         return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
     }
@@ -185,7 +205,8 @@ class SunburstChart {
         return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
     }
 
-    resetZoom() {
+    resetToRoot() {
+        this.history = [this.root];
         this.clicked(null, this.root);
     }
 
