@@ -7,15 +7,9 @@ class App {
 
     async init() {
         try {
-            // Загружаем данные
             await this.loadData();
-            
-            // Инициализируем график
             this.initChart();
-            
-            // Настраиваем обработчики событий
             this.setupEventHandlers();
-            
         } catch (error) {
             console.error('Ошибка инициализации:', error);
             this.showError('Не удалось загрузить данные');
@@ -41,53 +35,17 @@ class App {
                     riskLevel: "high",
                     value: 450000,
                     children: [
-                        { 
-                            name: "Правовые риски", 
-                            value: 180000, 
-                            riskLevel: "high",
-                            directLosses: 100000,
-                            indirectLosses: 80000,
-                            limit: 500000,
-                            forecast: 200000,
-                            drivers: ["Изменение законодательства", "Судебные разбирательства", "Нормативные требования"],
-                            hashtags: ["#закон", "#суд", "#регулятор", "#compliance"],
-                            incidentCount: 5,
-                            topIncidents: [
-                                { name: "Судебный иск от клиента", count: 2 },
-                                { name: "Штраф от регулятора", count: 1 },
-                                { name: "Нарушение compliance", count: 2 }
-                            ],
-                            coveredRisks: 15,
-                            totalRisks: 25,
-                            infoEvents: [
-                                "Принятие нового закона о налогах",
-                                "Изменение в регулировании банковской деятельности",
-                                "Ужесточение требований ЦБ"
-                            ],
-                            aiConclusion: "Высокий уровень правовых рисков due to ужесточение законодательства и увеличение судебных разбирательств. Рекомендуется усилить compliance-контроль и провести аудит договорной работы."
-                        },
-                        { 
-                            name: "Регуляторные риски", 
-                            value: 150000, 
-                            riskLevel: "medium" 
-                        },
-                        { 
-                            name: "Риски ИБ", 
-                            value: 120000, 
-                            riskLevel: "high" 
-                        }
+                        { name: "Правовые риски", value: 180000, riskLevel: "high" },
+                        { name: "Регуляторные риски", value: 150000, riskLevel: "medium" },
+                        { name: "Риски информационной безопасности", value: 120000, riskLevel: "high" }
                     ]
                 },
                 {
                     name: "ИТ",
                     riskLevel: "medium",
-                    value: 280000,
+                    value: 380000,
                     children: [
-                        { 
-                            name: "Технологические риски", 
-                            value: 280000, 
-                            riskLevel: "medium" 
-                        }
+                        { name: "Технологические риски", value: 380000, riskLevel: "medium" }
                     ]
                 },
                 {
@@ -95,16 +53,61 @@ class App {
                     riskLevel: "high",
                     value: 520000,
                     children: [
-                        { 
-                            name: "Риски внешнего мошенничества", 
-                            value: 300000, 
-                            riskLevel: "high" 
-                        },
-                        { 
-                            name: "Риски клиентов", 
-                            value: 220000, 
-                            riskLevel: "medium" 
-                        }
+                        { name: "Риски внешнего мошенничества", value: 300000, riskLevel: "high" },
+                        { name: "Риски клиентов", value: 220000, riskLevel: "medium" }
+                    ]
+                },
+                {
+                    name: "Партнеры",
+                    riskLevel: "medium",
+                    value: 290000,
+                    children: [
+                        { name: "Риски контрагентов", value: 120000, riskLevel: "medium" },
+                        { name: "Риски цепочки поставок", value: 100000, riskLevel: "medium" },
+                        { name: "Товарные риски", value: 70000, riskLevel: "low" }
+                    ]
+                },
+                {
+                    name: "Новости",
+                    riskLevel: "low",
+                    value: 90000,
+                    children: [
+                        { name: "Репутационные риски", value: 90000, riskLevel: "low" }
+                    ]
+                },
+                {
+                    name: "Процессы",
+                    riskLevel: "medium",
+                    value: 210000,
+                    children: [
+                        { name: "Процессные риски", value: 210000, riskLevel: "medium" }
+                    ]
+                },
+                {
+                    name: "Сотрудники",
+                    riskLevel: "high",
+                    value: 380000,
+                    children: [
+                        { name: "Риски внутреннего мошенничества", value: 220000, riskLevel: "high" },
+                        { name: "Риски персонала", value: 160000, riskLevel: "medium" }
+                    ]
+                },
+                {
+                    name: "Внешние факторы",
+                    riskLevel: "low",
+                    value: 150000,
+                    children: [
+                        { name: "Природные риски", value: 60000, riskLevel: "low" },
+                        { name: "Техногенные риски", value: 50000, riskLevel: "medium" },
+                        { name: "Риски физической безопасности", value: 40000, riskLevel: "low" }
+                    ]
+                },
+                {
+                    name: "Проекты",
+                    riskLevel: "medium",
+                    value: 175000,
+                    children: [
+                        { name: "Проектные риски", value: 175000, riskLevel: "medium" }
                     ]
                 }
             ]
@@ -115,13 +118,11 @@ class App {
         const chartContainer = document.getElementById('chart');
         this.chart = new SunburstChart(chartContainer, this.data);
         
-        // Настраиваем обработчик кликов
         this.chart.onSegmentClick((segment) => {
             this.updateDetails(segment);
             this.updateBackButton();
         });
         
-        // Первоначальное обновление деталей
         this.updateDetails(this.chart.root);
         this.updateBackButton();
     }
@@ -136,7 +137,7 @@ class App {
                     <p>Выберите категорию риска для детального анализа</p>
                     <div style="margin-top: 20px; text-align: left;">
                         <div class="metric" style="margin: 10px 0;">
-                            <span class="metric-value">${this.chart.root.descendants().length - 1}</span>
+                            <span class="metric-value">${this.chart.root.children ? this.chart.root.children.length : 0}</span>
                             <span class="metric-label">Всего категорий рисков</span>
                         </div>
                         <div class="metric" style="margin: 10px 0;">
@@ -149,10 +150,9 @@ class App {
             return;
         }
 
-        // Если это категория (не листовой узел)
         if (segment.children) {
             const totalLosses = segment.value;
-            const riskCount = segment.descendants().length - 1;
+            const riskCount = segment.children.length;
             const riskLevel = segment.data.riskLevel || 'low';
             
             let risksHTML = '';
@@ -205,11 +205,8 @@ class App {
                 ${risksHTML}
             `;
         } else {
-            // Если это листовой узел (конкретный риск)
             const riskData = segment.data;
             const riskLevel = riskData.riskLevel || 'low';
-            const coveragePercent = riskData.coveredRisks && riskData.totalRisks ? 
-                Math.round((riskData.coveredRisks / riskData.totalRisks) * 100) : 0;
 
             detailsContent.innerHTML = `
                 <div class="risk-card ${riskLevel}">
@@ -232,14 +229,60 @@ class App {
                         </div>
                     </div>
                     
-                    ${riskData.drivers ? `
                     <div class="drivers-section">
                         <div class="section-title">Драйверы риска</div>
                         <div style="color: #495057;">
-                            ${riskData.drivers.map(driver => `<div>• ${driver}</div>`).join('')}
+                            <div>• Изменение рыночных условий</div>
+                            <div>• Внешние экономические факторы</div>
+                            <div>• Операционные сбои</div>
                         </div>
                     </div>
-                    ` : ''}
+                    
+                    <div class="drivers-section">
+                        <div class="section-title">Хештеги инцидентов</div>
+                        <div class="hashtags">
+                            <span class="hashtag">#риск</span>
+                            <span class="hashtag">#инцидент</span>
+                            <span class="hashtag">#${riskData.name.toLowerCase().replace(/\s+/g, '')}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="incidents-section">
+                        <div class="section-title">
+                            Инциденты (всего: 5)
+                        </div>
+                        <div class="incident-item">
+                            <strong>Типовой инцидент 1</strong>
+                            <div style="color: #6c757d; font-size: 0.8rem;">2 инцидента</div>
+                        </div>
+                        <div class="incident-item">
+                            <strong>Типовой инцидент 2</strong>
+                            <div style="color: #6c757d; font-size: 0.8rem;">1 инцидент</div>
+                        </div>
+                    </div>
+                    
+                    <div class="coverage-section">
+                        <div class="section-title">
+                            Покрытие мерами (15/25)
+                        </div>
+                        <div class="coverage-progress">
+                            <div class="coverage-bar" style="width: 60%"></div>
+                        </div>
+                        <div style="text-align: center; color: #28a745; font-weight: 600;">
+                            60% покрыто
+                        </div>
+                    </div>
+                    
+                    <div class="info-section">
+                        <div class="section-title">Влияющие инфоповоды</div>
+                        <div class="info-item">Изменение законодательства в отрасли</div>
+                        <div class="info-item">Рост числа кибератак</div>
+                    </div>
+                    
+                    <div class="ai-section">
+                        <div class="section-title">Анализ AI</div>
+                        <div class="ai-conclusion">Уровень риска ${riskLevel === 'high' ? 'высокий' : riskLevel === 'medium' ? 'средний' : 'низкий'}. Рекомендуется усилить контрольные мероприятия и мониторинг.</div>
+                    </div>
                 </div>
             `;
         }
@@ -247,43 +290,47 @@ class App {
 
     updateBackButton() {
         const backButton = document.getElementById('back-btn');
-        const canGoBack = this.chart.history.length > 1;
+        const canGoBack = this.chart && this.chart.history.length > 1;
         
-        if (canGoBack) {
-            backButton.style.opacity = '1';
-            backButton.style.cursor = 'pointer';
-            backButton.disabled = false;
-        } else {
-            backButton.style.opacity = '0.5';
-            backButton.style.cursor = 'not-allowed';
-            backButton.disabled = true;
+        if (backButton) {
+            if (canGoBack) {
+                backButton.style.opacity = '1';
+                backButton.style.cursor = 'pointer';
+                backButton.disabled = false;
+            } else {
+                backButton.style.opacity = '0.5';
+                backButton.style.cursor = 'not-allowed';
+                backButton.disabled = true;
+            }
         }
     }
 
     setupEventHandlers() {
         const backButton = document.getElementById('back-btn');
-        
-        backButton.addEventListener('click', () => {
-            const success = this.chart.goBack();
-            if (success) {
-                this.updateDetails(this.chart.currentRoot);
-                this.updateBackButton();
-            }
-        });
+        if (backButton) {
+            backButton.addEventListener('click', () => {
+                if (this.chart && this.chart.goBack()) {
+                    this.updateDetails(this.chart.currentRoot);
+                    this.updateBackButton();
+                }
+            });
+        }
     }
 
     showError(message) {
         const detailsContent = document.getElementById('details-content');
-        detailsContent.innerHTML = `
-            <div class="error-message">
-                <h4>Ошибка</h4>
-                <p>${message}</p>
-            </div>
-        `;
+        if (detailsContent) {
+            detailsContent.innerHTML = `
+                <div class="error-message">
+                    <h4>Ошибка</h4>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
     }
 }
 
-// Инициализация приложения после загрузки DOM
+// Инициализация приложения
 document.addEventListener('DOMContentLoaded', () => {
     new App();
 });
