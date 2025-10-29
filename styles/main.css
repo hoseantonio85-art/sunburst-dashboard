@@ -1,3 +1,4 @@
+/* Базовые стили и сброс */
 * {
     margin: 0;
     padding: 0;
@@ -7,386 +8,345 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #333;
     min-height: 100vh;
+    color: #2c3e50;
+    line-height: 1.6;
 }
 
-.container {
+/* Основной контейнер */
+.dashboard-container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
 }
 
-header {
-    text-align: center;
-    margin-bottom: 30px;
+/* Шапка */
+.dashboard-header {
     background: rgba(255, 255, 255, 0.95);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-header h1 {
-    color: #2c3e50;
-    font-size: 2.2rem;
-    margin-bottom: 15px;
-}
-
-.header-info {
+    border-radius: 12px;
+    padding: 20px 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.dashboard-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+/* Кнопка Назад */
+.back-button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover:not(:disabled) {
+    background: #2980b9;
+    transform: translateY(-1px);
+}
+
+.back-button:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Легенда рисков */
+.risk-legend {
+    display: flex;
     gap: 20px;
     flex-wrap: wrap;
 }
 
-.risk-level {
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.risk-level.high {
-    background: #ff6b6b;
-    color: white;
-}
-
-.risk-level.medium {
-    background: #ffd93d;
-    color: #2c3e50;
-}
-
-.risk-level.low {
-    background: #cccccc;
-    color: #2c3e50;
-}
-
-.main-content {
+.legend-item {
     display: flex;
-    gap: 30px;
-    flex: 1;
-    min-height: 600px;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
 }
 
-.chart-container {
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.legend-color.very-high { background: #8B0000; }
+.legend-color.high { background: #FF4444; }
+.legend-color.medium { background: #FFAA00; }
+.legend-color.low { background: #CCCCCC; }
+
+/* Основное содержимое */
+.dashboard-main {
+    display: flex;
+    gap: 20px;
+    min-height: 70vh;
+}
+
+/* Секция графика */
+.chart-section {
     flex: 2;
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.sunburst-container {
+    width: 100%;
+    height: 600px;
+    position: relative;
+}
+
+/* Секция деталей */
+.details-section {
+    flex: 1;
+    min-width: 300px;
 }
 
 .details-panel {
-    flex: 1;
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    display: flex;
-    flex-direction: column;
-    min-width: 400px;
-}
-
-.details-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 3px solid #e9ecef;
-}
-
-.details-header h3 {
-    color: #2c3e50;
-    margin: 0;
-    font-size: 1.4rem;
-}
-
-.back-btn {
-    background: #6c757d;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.back-btn:hover {
-    background: #5a6268;
-    transform: translateX(-3px);
-}
-
-.details-content {
-    flex: 1;
-    overflow-y: auto;
-}
-
-.welcome-message {
-    text-align: center;
-    padding: 40px 20px;
-    color: #6c757d;
-}
-
-.welcome-message h4 {
-    margin-bottom: 10px;
-    color: #495057;
-}
-
-.risk-card {
-    background: white;
     border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    border-left: 5px solid;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    min-height: 600px;
 }
 
-.risk-card.high {
-    border-left-color: #ff6b6b;
-    background: linear-gradient(135deg, #fff5f5 0%, #ffeaea 100%);
+.details-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #7f8c8d;
+    font-style: italic;
+    text-align: center;
 }
 
-.risk-card.medium {
-    border-left-color: #ffd93d;
-    background: linear-gradient(135deg, #fffdf0 0%, #fff9e6 100%);
+/* Стили для sunburst графика */
+.sunburst-path {
+    stroke: #fff;
+    stroke-width: 1px;
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
-.risk-card.low {
-    border-left-color: #cccccc;
-    background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f4 100%);
+.sunburst-path:hover {
+    stroke-width: 2px;
+    stroke: #2c3e50;
 }
 
-.risk-header {
+.sunburst-label {
+    font-size: 12px;
+    font-weight: 600;
+    fill: #2c3e50;
+    pointer-events: none;
+    text-anchor: middle;
+}
+
+/* Карточки рисков */
+.risk-card {
+    background: #f8f9fa;
+    border-left: 4px solid;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: transform 0.2s ease;
+}
+
+.risk-card:hover {
+    transform: translateX(5px);
+}
+
+.risk-card.very-high { border-left-color: #8B0000; }
+.risk-card.high { border-left-color: #FF4444; }
+.risk-card.medium { border-left-color: #FFAA00; }
+.risk-card.low { border-left-color: #CCCCCC; }
+
+.risk-card-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 15px;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
-.risk-title {
-    font-size: 1.2rem;
+.risk-name {
     font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 5px;
+    font-size: 16px;
 }
 
 .risk-level-badge {
     padding: 4px 12px;
-    border-radius: 15px;
-    font-size: 0.8rem;
+    border-radius: 20px;
+    font-size: 12px;
     font-weight: 600;
-    text-transform: uppercase;
+    color: white;
 }
 
-.risk-metrics {
+.risk-level-badge.very-high { background: #8B0000; }
+.risk-level-badge.high { background: #FF4444; }
+.risk-level-badge.medium { background: #FFAA00; }
+.risk-level-badge.low { background: #CCCCCC; color: #2c3e50; }
+
+/* Сетка метрик */
+.metrics-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
-    margin-bottom: 15px;
+    margin: 20px 0;
 }
 
-.metric {
-    background: rgba(255, 255, 255, 0.7);
-    padding: 12px;
+.metric-item {
+    background: white;
+    padding: 15px;
     border-radius: 8px;
-    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .metric-value {
-    font-size: 1.3rem;
+    font-size: 24px;
     font-weight: 700;
     color: #2c3e50;
-    display: block;
 }
 
 .metric-label {
-    font-size: 0.85rem;
-    color: #6c757d;
+    font-size: 12px;
+    color: #7f8c8d;
     margin-top: 5px;
 }
 
-.drivers-section, .incidents-section, .coverage-section, .info-section, .ai-section {
-    margin-bottom: 20px;
-}
-
-.section-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #495057;
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 2px solid #e9ecef;
-}
-
-.hashtags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 10px;
-}
-
-.hashtag {
-    background: #e9ecef;
-    padding: 4px 10px;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    color: #495057;
-}
-
-.incident-item {
-    background: #f8f9fa;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    border-left: 3px solid #6c757d;
-}
-
-.coverage-progress {
-    background: #e9ecef;
-    border-radius: 10px;
-    height: 20px;
-    margin: 10px 0;
+/* Прогресс-бары */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #ecf0f1;
+    border-radius: 4px;
     overflow: hidden;
+    margin: 10px 0;
 }
 
-.coverage-bar {
+.progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #28a745, #20c997);
+    background: #27ae60;
     transition: width 0.3s ease;
 }
 
-.info-item {
-    background: #e7f3ff;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    border-left: 3px solid #007bff;
-    font-size: 0.9rem;
+/* Хештеги */
+.hash-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0;
 }
 
-.ai-conclusion {
-    background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
-    padding: 15px;
-    border-radius: 10px;
-    border-left: 5px solid #17a2b8;
-    font-style: italic;
-    color: #495057;
+.hash-tag {
+    background: #e1f5fe;
+    color: #0288d1;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
 }
 
 /* Адаптивность */
-@media (max-width: 1200px) {
-    .main-content {
+@media (max-width: 1024px) {
+    .dashboard-main {
         flex-direction: column;
     }
     
-    .details-panel {
-        min-width: auto;
+    .chart-section,
+    .details-section {
+        flex: none;
     }
     
-    .chart-container {
-        min-height: 500px;
+    .sunburst-container {
+        height: 500px;
     }
 }
 
 @media (max-width: 768px) {
-    .container {
-        padding: 10px;
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
     }
     
-    header h1 {
-        font-size: 1.8rem;
+    .header-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
     }
     
-    .risk-metrics {
+    .risk-legend {
+        gap: 10px;
+    }
+    
+    .sunburst-container {
+        height: 400px;
+    }
+    
+    .metrics-grid {
         grid-template-columns: 1fr;
     }
 }
 
-/* Стили для кнопки Назад в разных состояниях */
-.back-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed !important;
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.back-btn:disabled:hover {
-    transform: none;
-    background: #6c757d;
+.fade-in {
+    animation: fadeIn 0.5s ease;
 }
 
-/* Стили для кнопки Назад */
-.back-btn {
-    background: #6c757d;
-    color: white;
-    border: none;
-    padding: 10px 20px;
+/* Списки инцидентов */
+.incident-list {
+    list-style: none;
+    margin: 15px 0;
+}
+
+.incident-item {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: white;
+    border-radius: 6px;
+    border-left: 3px solid #e74c3c;
+    font-size: 14px;
+}
+
+/* AI анализ */
+.ai-analysis {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
     border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    padding: 15px;
+    margin-top: 20px;
+    font-size: 14px;
 }
 
-.back-btn:hover:not(:disabled) {
-    background: #5a6268;
-    transform: translateX(-3px);
-}
-
-.back-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.back-btn:disabled:hover {
-    background: #6c757d;
-}
-
-/* Дополнительные стили для кнопки Назад */
-.back-btn {
-    background: #6c757d;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.back-btn:hover:not(:disabled) {
-    background: #5a6268;
-    transform: translateX(-3px);
-}
-
-.back-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.back-btn:disabled:hover {
-    background: #6c757d;
-    transform: none;
-}
-
-/* Убедимся, что график адаптируется */
-.chart-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.ai-analysis h4 {
+    color: #856404;
+    margin-bottom: 10px;
 }
