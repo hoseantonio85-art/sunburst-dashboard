@@ -42,7 +42,7 @@ class App {
                 },
                 {
                     name: "ИТ",
-                    riskLevel: "medium",
+                    riskLevel: "medium", 
                     value: 380000,
                     children: [
                         { name: "Технологические риски", value: 380000, riskLevel: "medium" }
@@ -290,7 +290,7 @@ class App {
 
     updateBackButton() {
         const backButton = document.getElementById('back-btn');
-        const canGoBack = this.chart && this.chart.history.length > 1;
+        const canGoBack = this.chart && this.chart.history && this.chart.history.length > 1;
         
         if (backButton) {
             if (canGoBack) {
@@ -308,7 +308,10 @@ class App {
     setupEventHandlers() {
         const backButton = document.getElementById('back-btn');
         if (backButton) {
-            backButton.addEventListener('click', () => {
+            // Удаляем старые обработчики
+            backButton.replaceWith(backButton.cloneNode(true));
+            // Добавляем новый обработчик
+            document.getElementById('back-btn').addEventListener('click', () => {
                 if (this.chart && this.chart.goBack()) {
                     this.updateDetails(this.chart.currentRoot);
                     this.updateBackButton();
