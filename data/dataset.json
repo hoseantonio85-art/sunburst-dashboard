@@ -1,85 +1,619 @@
 {
-    "name": "Операционные риски",
-    "children": [
+  "name": "Операционные риски",
+  "riskLevel": "medium",
+  "value": 45000000,
+  "children": [
+    {
+      "name": "Законы",
+      "riskLevel": "high",
+      "value": 8000000,
+      "children": [
         {
-            "name": "Законы",
-            "riskLevel": "high",
-            "value": 450000,
-            "children": [
-                { "name": "Правовые риски", "value": 180000, "riskLevel": "high" },
-                { "name": "Регуляторные риски", "value": 150000, "riskLevel": "medium" },
-                { "name": "Риски информационной безопасности", "value": 120000, "riskLevel": "high" }
-            ]
+          "name": "Правовые риски",
+          "riskLevel": "high",
+          "value": 5000000,
+          "details": {
+            "directLosses": 2500000,
+            "indirectLosses": 2500000,
+            "riskLimit": 10000000,
+            "forecast": 3000000,
+            "drivers": ["законодательство", "судебная_практика", "лицензии"],
+            "incidents": {
+              "total": 23,
+              "top": [
+                {"name": "Судебные иски", "frequency": "15 раз"},
+                {"name": "Лицензионные нарушения", "frequency": "8 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 70,
+              "covered": 7,
+              "total": 10
+            },
+            "infoEvents": [
+              {"date": "2024-01-20", "description": "Изменения в налоговом законодательстве"},
+              {"date": "2024-01-12", "description": "Новые требования к лицензированию"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Высокий уровень правовых рисков требует усиления юридического сопровождения операций.",
+              "recommendations": "Провести аудит договорной базы, усилить compliance-контроль"
+            }
+          }
         },
         {
-            "name": "ИТ",
-            "riskLevel": "medium",
-            "value": 380000,
-            "children": [
-                { "name": "Технологические риски", "value": 380000, "riskLevel": "medium" }
-            ]
+          "name": "Регуляторные риски",
+          "riskLevel": "medium",
+          "value": 2000000,
+          "details": {
+            "directLosses": 800000,
+            "indirectLosses": 1200000,
+            "riskLimit": 5000000,
+            "forecast": 1500000,
+            "drivers": ["отчетность", "надзор", "стандарты"],
+            "incidents": {
+              "total": 12,
+              "top": [
+                {"name": "Нарушения отчетности", "frequency": "7 раз"},
+                {"name": "Несоответствие стандартам", "frequency": "5 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 85,
+              "covered": 17,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-18", "description": "Ужесточение требований регулятора"},
+              {"date": "2024-01-05", "description": "Введение новых форм отчетности"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Риски находятся под контролем, но требуют постоянного мониторинга изменений.",
+              "recommendations": "Автоматизировать процессы отчетности, назначить ответственного за compliance"
+            }
+          }
         },
         {
-            "name": "Клиенты",
-            "riskLevel": "high",
-            "value": 520000,
-            "children": [
-                { "name": "Риски внешнего мошенничества", "value": 300000, "riskLevel": "high" },
-                { "name": "Риски клиентов", "value": 220000, "riskLevel": "medium" }
-            ]
-        },
-        {
-            "name": "Партнеры",
-            "riskLevel": "medium",
-            "value": 290000,
-            "children": [
-                { "name": "Риски контрагентов", "value": 120000, "riskLevel": "medium" },
-                { "name": "Риски цепочки поставок", "value": 100000, "riskLevel": "medium" },
-                { "name": "Товарные риски", "value": 70000, "riskLevel": "low" }
-            ]
-        },
-        {
-            "name": "Новости",
-            "riskLevel": "low",
-            "value": 90000,
-            "children": [
-                { "name": "Репутационные риски", "value": 90000, "riskLevel": "low" }
-            ]
-        },
-        {
-            "name": "Процессы",
-            "riskLevel": "medium",
-            "value": 210000,
-            "children": [
-                { "name": "Процессные риски", "value": 210000, "riskLevel": "medium" }
-            ]
-        },
-        {
-            "name": "Сотрудники",
-            "riskLevel": "high",
-            "value": 380000,
-            "children": [
-                { "name": "Риски внутреннего мошенничества", "value": 220000, "riskLevel": "high" },
-                { "name": "Риски персонала", "value": 160000, "riskLevel": "medium" }
-            ]
-        },
-        {
-            "name": "Внешние факторы",
-            "riskLevel": "low",
-            "value": 150000,
-            "children": [
-                { "name": "Природные риски", "value": 60000, "riskLevel": "low" },
-                { "name": "Техногенные риски", "value": 50000, "riskLevel": "medium" },
-                { "name": "Риски физической безопасности", "value": 40000, "riskLevel": "low" }
-            ]
-        },
-        {
-            "name": "Проекты",
-            "riskLevel": "medium",
-            "value": 175000,
-            "children": [
-                { "name": "Проектные риски", "value": 175000, "riskLevel": "medium" }
-            ]
+          "name": "Риски информационной безопасности",
+          "riskLevel": "high",
+          "value": 1000000,
+          "details": {
+            "directLosses": 600000,
+            "indirectLosses": 400000,
+            "riskLimit": 3000000,
+            "forecast": 800000,
+            "drivers": ["кибератаки", "утечки", "вирусы"],
+            "incidents": {
+              "total": 18,
+              "top": [
+                {"name": "Фишинговые атаки", "frequency": "10 раз"},
+                {"name": "Утечки данных", "frequency": "5 раз"},
+                {"name": "DDoS атаки", "frequency": "3 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 60,
+              "covered": 9,
+              "total": 15
+            },
+            "infoEvents": [
+              {"date": "2024-01-22", "description": "Обнаружена новая уязвимость в системе"},
+              {"date": "2024-01-08", "description": "Усиление кибератак в отрасли"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Критический уровень угроз информационной безопасности.",
+              "recommendations": "Обновить системы защиты, провести тренинг сотрудников по кибербезопасности"
+            }
+          }
         }
-    ]
+      ]
+    },
+    {
+      "name": "ИТ",
+      "riskLevel": "medium",
+      "value": 6000000,
+      "children": [
+        {
+          "name": "Технологические риски",
+          "riskLevel": "medium",
+          "value": 6000000,
+          "details": {
+            "directLosses": 3000000,
+            "indirectLosses": 3000000,
+            "riskLimit": 8000000,
+            "forecast": 3500000,
+            "drivers": ["сбои_систем", "оборудование", "интеграция"],
+            "incidents": {
+              "total": 25,
+              "top": [
+                {"name": "Сбой серверов", "frequency": "8 раз"},
+                {"name": "Проблемы с сетью", "frequency": "7 раз"},
+                {"name": "Ошибки ПО", "frequency": "10 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 75,
+              "covered": 15,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-25", "description": "Плановое обновление ИТ-инфраструктуры"},
+              {"date": "2024-01-14", "description": "Внедрение новой CRM системы"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Стабильная ситуация с периодическими технологическими сбоями.",
+              "recommendations": "Создать систему резервного копирования, обновить устаревшее оборудование"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Клиенты",
+      "riskLevel": "high",
+      "value": 10000000,
+      "children": [
+        {
+          "name": "Риски внешнего мошенничества",
+          "riskLevel": "high",
+          "value": 7000000,
+          "details": {
+            "directLosses": 5000000,
+            "indirectLosses": 2000000,
+            "riskLimit": 15000000,
+            "forecast": 6000000,
+            "drivers": ["мошенничество", "подделки", "кражи"],
+            "incidents": {
+              "total": 45,
+              "top": [
+                {"name": "Кредитное мошенничество", "frequency": "25 раз"},
+                {"name": "Подделка документов", "frequency": "15 раз"},
+                {"name": "Кража идентичности", "frequency": "5 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 65,
+              "covered": 13,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-30", "description": "Волна мошеннических операций в регионе"},
+              {"date": "2024-01-16", "description": "Внедрение новой системы верификации"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Высокий уровень мошеннических операций требует усиления контроля.",
+              "recommendations": "Внедрить AI-систему обнаружения мошенничества, усилить проверку клиентов"
+            }
+          }
+        },
+        {
+          "name": "Риски клиентов",
+          "riskLevel": "medium",
+          "value": 3000000,
+          "details": {
+            "directLosses": 1500000,
+            "indirectLosses": 1500000,
+            "riskLimit": 6000000,
+            "forecast": 2000000,
+            "drivers": ["дефолты", "репутация", "лояльность"],
+            "incidents": {
+              "total": 32,
+              "top": [
+                {"name": "Дефолты клиентов", "frequency": "20 раз"},
+                {"name": "Жалобы клиентов", "frequency": "12 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 80,
+              "covered": 16,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-28", "description": "Снижение кредитных рейтингов клиентов"},
+              {"date": "2024-01-10", "description": "Запуск программы лояльности"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Риски клиентов контролируются, но требуют мониторинга.",
+              "recommendations": "Улучшить скоринговую систему, усилить работу с проблемными клиентами"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Партнеры",
+      "riskLevel": "medium",
+      "value": 5000000,
+      "children": [
+        {
+          "name": "Риски контрагентов",
+          "riskLevel": "medium",
+          "value": 2000000,
+          "details": {
+            "directLosses": 1000000,
+            "indirectLosses": 1000000,
+            "riskLimit": 4000000,
+            "forecast": 1200000,
+            "drivers": ["надежность", "финансы", "договоры"],
+            "incidents": {
+              "total": 15,
+              "top": [
+                {"name": "Невыполнение обязательств", "frequency": "8 раз"},
+                {"name": "Финансовые проблемы партнеров", "frequency": "7 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 70,
+              "covered": 14,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-24", "description": "Банкротство ключевого поставщика"},
+              {"date": "2024-01-07", "description": "Пересмотр договоров с контрагентами"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Умеренные риски, требующие диверсификации партнеров.",
+              "recommendations": "Провести Due Diligence контрагентов, создать резервных поставщиков"
+            }
+          }
+        },
+        {
+          "name": "Риски цепочки поставок",
+          "riskLevel": "medium",
+          "value": 2000000,
+          "details": {
+            "directLosses": 800000,
+            "indirectLosses": 1200000,
+            "riskLimit": 4000000,
+            "forecast": 1500000,
+            "drivers": ["логистика", "поставщики", "таможня"],
+            "incidents": {
+              "total": 20,
+              "top": [
+                {"name": "Задержки поставок", "frequency": "12 раз"},
+                {"name": "Таможенные проблемы", "frequency": "8 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 65,
+              "covered": 13,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-29", "description": "Проблемы с логистикой из-за погодных условий"},
+              {"date": "2024-01-13", "description": "Изменения таможенного законодательства"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Цепочка поставок уязвима к внешним факторам.",
+              "recommendations": "Диверсифицировать логистические маршруты, создать буферные запасы"
+            }
+          }
+        },
+        {
+          "name": "Товарные риски",
+          "riskLevel": "low",
+          "value": 1000000,
+          "details": {
+            "directLosses": 400000,
+            "indirectLosses": 600000,
+            "riskLimit": 2000000,
+            "forecast": 500000,
+            "drivers": ["качество", "брак", "условия"],
+            "incidents": {
+              "total": 8,
+              "top": [
+                {"name": "Брак продукции", "frequency": "5 раз"},
+                {"name": "Нарушение условий хранения", "frequency": "3 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 90,
+              "covered": 18,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-21", "description": "Внедрение системы контроля качества"},
+              {"date": "2024-01-09", "description": "Обновление стандартов хранения"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Низкий уровень рисков, хороший контроль качества.",
+              "recommendations": "Поддерживать текущие стандарты, проводить регулярный аудит"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Новости",
+      "riskLevel": "low",
+      "value": 2000000,
+      "children": [
+        {
+          "name": "Репутационные риски",
+          "riskLevel": "low",
+          "value": 2000000,
+          "details": {
+            "directLosses": 500000,
+            "indirectLosses": 1500000,
+            "riskLimit": 3000000,
+            "forecast": 800000,
+            "drivers": ["СМИ", "соцсети", "отзывы"],
+            "incidents": {
+              "total": 5,
+              "top": [
+                {"name": "Негативные публикации", "frequency": "3 раз"},
+                {"name": "Жалобы в соцсетях", "frequency": "2 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 85,
+              "covered": 17,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-26", "description": "Публикация годового отчета"},
+              {"date": "2024-01-11", "description": "Запуск PR-кампании"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Репутационные риски минимальны, бренд устойчив.",
+              "recommendations": "Продолжать мониторинг медиапространства, развивать программы КСО"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Процессы",
+      "riskLevel": "medium",
+      "value": 4000000,
+      "children": [
+        {
+          "name": "Процессные риски",
+          "riskLevel": "medium",
+          "value": 4000000,
+          "details": {
+            "directLosses": 2000000,
+            "indirectLosses": 2000000,
+            "riskLimit": 6000000,
+            "forecast": 2500000,
+            "drivers": ["ошибки", "процедуры", "документооборот"],
+            "incidents": {
+              "total": 28,
+              "top": [
+                {"name": "Ошибки в процессах", "frequency": "15 раз"},
+                {"name": "Нарушение процедур", "frequency": "10 раз"},
+                {"name": "Потеря документов", "frequency": "3 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 75,
+              "covered": 15,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-27", "description": "Реинжиниринг бизнес-процессов"},
+              {"date": "2024-01-06", "description": "Внедрение электронного документооборота"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Процессные риски требуют оптимизации и автоматизации.",
+              "recommendations": "Автоматизировать рутинные процессы, внедрить систему контроля качества"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Сотрудники",
+      "riskLevel": "high",
+      "value": 7000000,
+      "children": [
+        {
+          "name": "Риски внутреннего мошенничества",
+          "riskLevel": "high",
+          "value": 4000000,
+          "details": {
+            "directLosses": 3000000,
+            "indirectLosses": 1000000,
+            "riskLimit": 8000000,
+            "forecast": 3500000,
+            "drivers": ["мошенничество", "злоупотребления", "конфликты"],
+            "incidents": {
+              "total": 12,
+              "top": [
+                {"name": "Присвоение средств", "frequency": "6 раз"},
+                {"name": "Злоупотребление полномочиями", "frequency": "4 раз"},
+                {"name": "Конфликт интересов", "frequency": "2 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 60,
+              "covered": 12,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-31", "description": "Внедрение системы внутреннего контроля"},
+              {"date": "2024-01-17", "description": "Проведение антикоррупционного тренинга"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Высокий риск внутреннего мошенничества требует усиления контроля.",
+              "recommendations": "Внедрить ротацию сотрудников, усилить внутренний аудит"
+            }
+          }
+        },
+        {
+          "name": "Риски персонала",
+          "riskLevel": "medium",
+          "value": 3000000,
+          "details": {
+            "directLosses": 1200000,
+            "indirectLosses": 1800000,
+            "riskLimit": 5000000,
+            "forecast": 2000000,
+            "drivers": ["текучесть", "квалификация", "лояльность"],
+            "incidents": {
+              "total": 35,
+              "top": [
+                {"name": "Увольнения ключевых сотрудников", "frequency": "20 раз"},
+                {"name": "Низкая квалификация", "frequency": "15 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 70,
+              "covered": 14,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-23", "description": "Запуск программы обучения сотрудников"},
+              {"date": "2024-01-04", "description": "Пересмотр системы мотивации"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Умеренные риски персонала, требуется развитие HR-политик.",
+              "recommendations": "Развить программы обучения, улучшить систему мотивации"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Внешние факторы",
+      "riskLevel": "low",
+      "value": 3000000,
+      "children": [
+        {
+          "name": "Природные риски",
+          "riskLevel": "low",
+          "value": 1000000,
+          "details": {
+            "directLosses": 400000,
+            "indirectLosses": 600000,
+            "riskLimit": 2000000,
+            "forecast": 500000,
+            "drivers": ["погода", "катаклизмы", "эпидемии"],
+            "incidents": {
+              "total": 3,
+              "top": [
+                {"name": "Отключение электричества", "frequency": "2 раз"},
+                {"name": "Наводнение", "frequency": "1 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 95,
+              "covered": 19,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-19", "description": "Неблагоприятные погодные условия в регионе"},
+              {"date": "2024-01-03", "description": "Установка резервных генераторов"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Низкий уровень природных рисков, хорошая подготовленность.",
+              "recommendations": "Поддерживать систему резервного копирования и аварийные планы"
+            }
+          }
+        },
+        {
+          "name": "Техногенные риски",
+          "riskLevel": "medium",
+          "value": 1500000,
+          "details": {
+            "directLosses": 800000,
+            "indirectLosses": 700000,
+            "riskLimit": 3000000,
+            "forecast": 900000,
+            "drivers": ["аварии", "инфраструктура", "коммуникации"],
+            "incidents": {
+              "total": 7,
+              "top": [
+                {"name": "Аварии на объектах", "frequency": "4 раз"},
+                {"name": "Проблемы с коммуникациями", "frequency": "3 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 80,
+              "covered": 16,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-15", "description": "Плановый ремонт инфраструктуры"},
+              {"date": "2024-01-02", "description": "Модернизация систем безопасности"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Техногенные риски под контролем, требуется регулярное обслуживание.",
+              "recommendations": "Проводить регулярный технический аудит, обновлять оборудование"
+            }
+          }
+        },
+        {
+          "name": "Риски физической безопасности",
+          "riskLevel": "low",
+          "value": 500000,
+          "details": {
+            "directLosses": 200000,
+            "indirectLosses": 300000,
+            "riskLimit": 1000000,
+            "forecast": 250000,
+            "drivers": ["кражи", "взломы", "охрана"],
+            "incidents": {
+              "total": 2,
+              "top": [
+                {"name": "Попытка взлома", "frequency": "1 раз"},
+                {"name": "Кража имущества", "frequency": "1 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 90,
+              "covered": 18,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-01", "description": "Усиление системы физической безопасности"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Минимальные риски физической безопасности.",
+              "recommendations": "Поддерживать текущий уровень охраны, проводить регулярные проверки"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Проекты",
+      "riskLevel": "medium",
+      "value": 4000000,
+      "children": [
+        {
+          "name": "Проектные риски",
+          "riskLevel": "medium",
+          "value": 4000000,
+          "details": {
+            "directLosses": 1800000,
+            "indirectLosses": 2200000,
+            "riskLimit": 6000000,
+            "forecast": 2300000,
+            "drivers": ["сроки", "бюджет", "качество"],
+            "incidents": {
+              "total": 22,
+              "top": [
+                {"name": "Срыв сроков", "frequency": "12 раз"},
+                {"name": "Превышение бюджета", "frequency": "8 раз"},
+                {"name": "Несоответствие качества", "frequency": "2 раз"}
+              ]
+            },
+            "coverage": {
+              "percentage": 65,
+              "covered": 13,
+              "total": 20
+            },
+            "infoEvents": [
+              {"date": "2024-01-28", "description": "Запуск нового IT-проекта"},
+              {"date": "2024-01-14", "description": "Корректировка бюджета проектов"}
+            ],
+            "aiAnalysis": {
+              "assessment": "Проектные риски требуют улучшения управления проектами.",
+              "recommendations": "Внедрить методологии Agile/Waterfall, усилить контроль этапов"
+            }
+          }
+        }
+      ]
+    }
+  ]
 }
