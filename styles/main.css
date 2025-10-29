@@ -311,3 +311,14 @@ header h1 {
         grid-template-columns: 1fr;
     }
 }
+
+/* Стили для кнопки Назад в разных состояниях */
+.back-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+}
+
+.back-btn:disabled:hover {
+    transform: none;
+    background: #6c757d;
+}
