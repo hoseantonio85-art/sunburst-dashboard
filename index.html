@@ -3,25 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интерактивный Sunburst Dashboard</title>
+    <title>Панель операционных рисков</title>
     <link rel="stylesheet" href="styles/main.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Аналитическая панель</h1>
+            <h1>📊 Панель операционных рисков</h1>
+            <div class="header-info">
+                <span class="risk-level high">Высокий риск</span>
+                <span class="risk-level medium">Средний риск</span>
+                <span class="risk-level low">Низкий риск</span>
+            </div>
         </header>
         
         <div class="main-content">
             <div class="chart-container" id="chart"></div>
             <div class="details-panel" id="details">
                 <div class="details-header">
-                    <h3>Детализация данных</h3>
-                    <button id="reset-btn" class="reset-btn">Сбросить zoom</button>
+                    <h3>Детализация риска</h3>
+                    <button id="back-btn" class="back-btn">← Назад</button>
                 </div>
                 <div id="details-content" class="details-content">
-                    <p class="placeholder">Выберите сегмент для детализации</p>
+                    <div class="welcome-message">
+                        <h4>Выберите категорию риска для детализации</h4>
+                        <p>Кликните на сегмент графика для просмотра детальной информации</p>
+                    </div>
                 </div>
             </div>
         </div>
