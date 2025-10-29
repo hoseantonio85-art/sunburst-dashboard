@@ -32,8 +32,10 @@ class SunburstChart {
             .innerRadius(d => d.y0 * radius)
             .outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1));
 
+        // Очищаем контейнер и создаем SVG
+        d3.select(this.container).select("svg").remove();
+        
         this.svg = d3.select(this.container)
-            .html('') // Очищаем контейнер
             .append("svg")
             .attr("viewBox", [-width / 2, -height / 2, width, width])
             .style("font", "12px sans-serif")
@@ -75,9 +77,6 @@ class SunburstChart {
             .data(this.root.descendants().slice(1))
             .join("path")
             .attr("fill", d => {
-                if (d.depth === 1) {
-                    return this.getRiskColor(d.data.riskLevel || 'low');
-                }
                 return this.getRiskColor(d.data.riskLevel || 'low');
             })
             .attr("fill-opacity", d => this.arcVisible(d.current) ? (d.children ? 0.8 : 0.7) : 0)
@@ -93,7 +92,7 @@ class SunburstChart {
         path.append("title")
             .text(d => `${d.ancestors().map(d => d.data.name).reverse().join(" → ")}\nУровень риска: ${this.getRiskLevelText(d.data.riskLevel)}\nПотери: ${d3.format(",d")(d.value || 0)}₽`);
 
-        // Обновляем метки - ПОКАЗЫВАЕМ ТОЛЬКО ПЕРВЫЙ УРОВЕНЬ
+        // Обновляем метки
         const label = this.labelGroup
             .selectAll("text")
             .data(this.root.descendants().slice(1))
@@ -183,8 +182,7 @@ class SunburstChart {
     }
 
     labelVisible(d) {
-        // ПОКАЗЫВАЕМ ТОЛЬКО ПЕРВЫЙ УРОВЕНЬ (depth === 1)
-        return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03 && d.depth === 1;
+        return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
     }
 
     labelTransform(d) {
