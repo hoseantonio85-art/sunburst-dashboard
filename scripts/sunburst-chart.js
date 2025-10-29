@@ -3,23 +3,24 @@ class SunburstChart {
         this.container = container;
         this.data = data;
         this.onSegmentClick = onSegmentClick;
-        this.currentRoot = null;
-        this.history = [];
         
-        // Размеры и отступы как в оригинальном примере
+        // Состояние навигации
+        this.history = [];
+        this.currentNode = null;
+        
+        // Размеры
         this.width = 600;
         this.height = this.width;
-        this.radius = this.width / 6;
+        this.radius = Math.min(this.width, this.height) / 2;
         
-        // Цветовая схема для рисков
+        // Цветовая схема
         this.colorScheme = {
             'very-high': '#8B0000',
-            'high': '#FF4444', 
-            'medium': '#FFAA00',
+            'high': '#FF4444',
+            'medium': '#FFAA00', 
             'low': '#CCCCCC'
         };
         
-        // Инициализация
         this.init();
     }
 
@@ -27,201 +28,203 @@ class SunburstChart {
         // Очищаем контейнер
         d3.select(this.container).html('');
         
-        // Создаем SVG контейнер как в примере
+        // Создаем SVG
         this.svg = d3.select(this.container)
             .append("svg")
-            .attr("viewBox", [-this.width / 2, -this.height / 2, this.width, this.width])
-            .style("font", "10px sans-serif")
-            .style("width", "100%")
-            .style("height", "100%");
+            .attr("width", this.width)
+            .attr("height", this.height)
+            .append("g")
+            .attr("transform", `translate(${this.width / 2},${this.height / 2})`);
 
-        // Вычисляем иерархию
-        this.hierarchy = d3.hierarchy(this.data)
-            .sum(d => d.value)
-            .sort((a, b) => b.value - a.value);
+        // Строим иерархию
+        this.root = d3.hierarchy(this.data);
+        this.root.sum(d => d.value || 0);
+        this.root.sort((a, b) => b.value - a.value);
 
-        // Создаем partition layout
+        // Partition layout
         this.partition = d3.partition()
-            .size([2 * Math.PI, this.hierarchy.height + 1]);
+            .size([2 * Math.PI, this.radius]);
 
-        this.root = this.partition(this.hierarchy);
-        this.root.each(d => d.current = d);
+        this.partition(this.root);
 
-        // Создаем генератор дуг с настройками из примера
+        // Генератор дуг
         this.arc = d3.arc()
             .startAngle(d => d.x0)
             .endAngle(d => d.x1)
-            .padAngle(d => Math.min((d.x1 - d.x0) / 2, 0.005))
-            .padRadius(this.radius * 1.5)
-            .innerRadius(d => d.y0 * this.radius)
-            .outerRadius(d => Math.max(d.y0 * this.radius, d.y1 * this.radius - 1));
+            .innerRadius(d => d.y0)
+            .outerRadius(d => d.y1);
 
-        // Добавляем группу для путей
-        this.pathGroup = this.svg.append("g");
+        // Сохраняем начальное состояние
+        this.currentNode = this.root;
+        this.history = [this.root];
 
-        // Добавляем дуги
-        this.path = this.pathGroup
-            .selectAll("path")
-            .data(this.root.descendants().slice(1))
-            .join("path")
-            .attr("fill", d => this.getRiskColor(d))
-            .attr("fill-opacity", d => this.arcVisible(d.current) ? (d.children ? 0.8 : 0.6) : 0)
-            .attr("pointer-events", d => this.arcVisible(d.current) ? "auto" : "none")
-            .attr("d", d => this.arc(d.current))
-            .style("cursor", "pointer")
-            .on("click", (event, d) => this.handleClick(event, d));
+        // Рендерим график
+        this.render();
+    }
 
-        // Добавляем подсказки
-        this.path.append("title")
-            .text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${this.formatValue(d.value)}`);
+    render() {
+        const nodes = this.root.descendants().filter(d => d.depth > 0);
+
+        // Очищаем предыдущие элементы
+        this.svg.selectAll("*").remove();
+
+        // Рисуем дуги
+        const path = this.svg.selectAll("path")
+            .data(nodes)
+            .enter().append("path")
+            .attr("d", this.arc)
+            .style("fill", d => this.getColor(d))
+            .style("stroke", "#fff")
+            .style("stroke-width", 1)
+            .style("cursor", d => d.children ? "pointer" : "default")
+            .style("opacity", 0.8)
+            .on("click", (event, d) => this.handleClick(event, d))
+            .on("mouseover", (event, d) => this.handleMouseOver(event, d))
+            .on("mouseout", (event, d) => this.handleMouseOut(event, d));
 
         // Добавляем метки
-        this.labelGroup = this.svg.append("g")
-            .attr("pointer-events", "none")
-            .attr("text-anchor", "middle")
-            .style("user-select", "none");
-
-        this.label = this.labelGroup
-            .selectAll("text")
-            .data(this.root.descendants().slice(1))
-            .join("text")
+        const label = this.svg.selectAll("text")
+            .data(nodes.filter(d => this.shouldShowLabel(d)))
+            .enter().append("text")
+            .attr("transform", d => this.getLabelTransform(d))
             .attr("dy", "0.35em")
-            .attr("fill-opacity", d => +this.labelVisible(d.current))
-            .attr("transform", d => this.labelTransform(d.current))
-            .text(d => d.data.name)
+            .attr("text-anchor", "middle")
             .style("font-size", "11px")
             .style("font-weight", "600")
-            .style("fill", "#2c3e50");
+            .style("fill", "#2c3e50")
+            .style("pointer-events", "none")
+            .style("opacity", d => this.getLabelOpacity(d))
+            .text(d => d.data.name);
 
-        // Добавляем центральный круг для возврата (как в примере)
-        this.parent = this.svg.append("circle")
-            .datum(this.root)
-            .attr("r", this.radius)
-            .attr("fill", "none")
-            .attr("pointer-events", "all")
-            .style("cursor", "pointer")
-            .on("click", (event, p) => this.handleClick(event, p));
+        // Анимация появления
+        path.transition()
+            .duration(750)
+            .style("opacity", 0.8);
 
-        // Устанавливаем начальное состояние
-        this.currentRoot = this.root;
-        this.history = [this.root];
+        label.transition()
+            .duration(750)
+            .style("opacity", d => this.getLabelOpacity(d));
     }
 
-    getRiskColor(d) {
-        // Для корневого уровня используем градиент серого
-        if (d.depth === 0) return "#f0f0f0";
+    getColor(d) {
+        if (d.depth === 1) {
+            // Первый уровень - категории рисков
+            return this.colorScheme[d.data.riskLevel] || this.colorScheme.low;
+        } else if (d.depth === 2) {
+            // Второй уровень - наследуем цвет от родителя
+            const parentRisk = d.parent.data.riskLevel;
+            return this.colorScheme[parentRisk] || this.colorScheme.low;
+        } else {
+            // Остальные уровни
+            return this.colorScheme.low;
+        }
+    }
+
+    shouldShowLabel(d) {
+        const angle = (d.x1 - d.x0) * 180 / Math.PI;
+        const radius = d.y1 - d.y0;
+        return angle > 10 && radius > 20 && d.depth <= 2;
+    }
+
+    getLabelTransform(d) {
+        const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;
+        const y = (d.y0 + d.y1) / 2;
+        const rotation = x - 90;
+        const translate = y;
         
-        // Находим родительский узел для определения цвета категории
-        let parent = d;
-        while (parent.depth > 1) parent = parent.parent;
-        
-        const riskLevel = parent.data.riskLevel;
-        return this.colorScheme[riskLevel] || this.colorScheme.low;
+        return `rotate(${rotation}) translate(${translate}) rotate(${rotation > 90 ? 180 : 0})`;
     }
 
-    formatValue(value) {
-        return new Intl.NumberFormat('ru-RU').format(value);
+    getLabelOpacity(d) {
+        return this.shouldShowLabel(d) ? 1 : 0;
     }
 
-    handleClick(event, p) {
+    handleClick(event, d) {
         event.stopPropagation();
         
-        // Если кликнули на центральный круг и есть куда возвращаться
-        if (p === this.root && this.history.length > 1) {
-            this.goBack();
+        // Если нет детей или это листовой узел
+        if (!d.children || d.depth >= 3) {
             return;
         }
 
-        // Если у узла нет детей, не делаем zoom
-        if (!p.children && !p._children) return;
+        // Сохраняем в историю
+        this.history.push(d);
+        this.currentNode = d;
 
-        // Добавляем в историю
-        this.history.push(p);
-        this.currentRoot = p;
-
-        // Выполняем анимацию перехода (как в оригинальном примере)
-        this.animateTransition(p);
+        // Анимация перехода
+        this.animateToNode(d);
         
-        // Вызываем callback для обновления деталей
+        // Колбэк для обновления деталей
         if (this.onSegmentClick) {
-            this.onSegmentClick(p);
+            this.onSegmentClick(d);
         }
     }
 
-    animateTransition(p) {
-        // Обновляем данные для анимации (как в оригинальном примере)
-        this.parent.datum(p.parent || this.root);
+    animateToNode(targetNode) {
+        const duration = 750;
 
-        this.root.each(d => d.target = {
-            x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-            x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-            y0: Math.max(0, d.y0 - p.depth),
-            y1: Math.max(0, d.y1 - p.depth)
-        });
-
-        const t = this.svg.transition().duration(750);
-
+        // Пересчитываем координаты для нового корня
+        this.partition(this.root);
+        
+        const nodes = this.root.descendants().filter(d => d.depth > 0);
+        
         // Анимация путей
-        this.path.transition(t)
-            .tween("data", d => {
-                const i = d3.interpolate(d.current, d.target);
-                return t => d.current = i(t);
+        const path = this.svg.selectAll("path")
+            .data(nodes, d => d.data.name)
+            .transition()
+            .duration(duration)
+            .attrTween("d", d => {
+                const interpolate = d3.interpolate(
+                    {x0: d.x0, x1: d.x1, y0: d.y0, y1: d.y1},
+                    {x0: d.x0, x1: d.x1, y0: d.y0, y1: d.y1}
+                );
+                return t => this.arc(interpolate(t));
             })
-            .filter(function(d) {
-                return +this.getAttribute("fill-opacity") || this.arcVisible(d.target);
-            })
-            .attr("fill-opacity", d => this.arcVisible(d.target) ? (d.children ? 0.8 : 0.6) : 0)
-            .attr("pointer-events", d => this.arcVisible(d.target) ? "auto" : "none")
-            .attrTween("d", d => () => this.arc(d.current));
+            .style("fill", d => this.getColor(d));
 
         // Анимация меток
-        this.label.filter(function(d) {
-            return +this.getAttribute("fill-opacity") || this.labelVisible(d.target);
-        }).transition(t)
-            .attr("fill-opacity", d => +this.labelVisible(d.target))
-            .attrTween("transform", d => () => this.labelTransform(d.current));
-    }
-
-    arcVisible(d) {
-        return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
-    }
-
-    labelVisible(d) {
-        return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
-    }
-
-    labelTransform(d) {
-        const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;
-        const y = (d.y0 + d.y1) / 2 * this.radius;
-        return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
+        const label = this.svg.selectAll("text")
+            .data(nodes.filter(d => this.shouldShowLabel(d)), d => d.data.name)
+            .transition()
+            .duration(duration)
+            .attr("transform", d => this.getLabelTransform(d))
+            .style("opacity", d => this.getLabelOpacity(d));
     }
 
     goBack() {
         if (this.history.length > 1) {
-            // Убираем текущий узел из истории
+            // Убираем текущий узел
             this.history.pop();
             const previousNode = this.history[this.history.length - 1];
-            this.currentRoot = previousNode;
+            this.currentNode = previousNode;
 
-            // Выполняем анимацию перехода назад
-            this.animateTransition(previousNode);
-
-            // Вызываем callback для обновления деталей
+            // Анимация возврата
+            this.animateToNode(previousNode);
+            
+            // Колбэк для обновления деталей
             if (this.onSegmentClick) {
                 this.onSegmentClick(previousNode);
             }
-
+            
             return true;
         }
         return false;
     }
 
-    getCurrentDepth() {
-        return this.history.length - 1;
+    handleMouseOver(event, d) {
+        d3.select(event.currentTarget)
+            .style("opacity", 1)
+            .style("stroke-width", 2);
     }
 
-    getCurrentPath() {
-        return this.history.map(node => node.data.name).join(' → ');
+    handleMouseOut(event, d) {
+        d3.select(event.currentTarget)
+            .style("opacity", 0.8)
+            .style("stroke-width", 1);
+    }
+
+    getCurrentDepth() {
+        return this.history.length - 1;
     }
 
     getNodeInfo(node) {
@@ -231,59 +234,16 @@ class SunburstChart {
             value: node.data.value,
             children: node.children ? node.children.length : 0,
             depth: node.depth,
-            hasChildren: !!(node.children || node._children)
+            hasChildren: !!(node.children)
         };
     }
 
-    // Метод для обновления данных
+    // Обновление данных
     updateData(newData) {
         this.data = newData;
-        
-        // Перестраиваем иерархию
-        this.hierarchy = d3.hierarchy(this.data)
-            .sum(d => d.value)
-            .sort((a, b) => b.value - a.value);
-
-        this.root = this.partition(this.hierarchy);
-        this.root.each(d => d.current = d);
-
-        // Сбрасываем историю и текущий корень
-        this.currentRoot = this.root;
-        this.history = [this.root];
-
-        // Обновляем график
-        this.updateChart();
+        this.init();
     }
 
-    updateChart() {
-        // Обновляем пути
-        this.path = this.pathGroup
-            .selectAll("path")
-            .data(this.root.descendants().slice(1))
-            .join("path")
-            .attr("fill", d => this.getRiskColor(d))
-            .attr("fill-opacity", d => this.arcVisible(d.current) ? (d.children ? 0.8 : 0.6) : 0)
-            .attr("pointer-events", d => this.arcVisible(d.current) ? "auto" : "none")
-            .attr("d", d => this.arc(d.current))
-            .style("cursor", "pointer")
-            .on("click", (event, d) => this.handleClick(event, d));
-
-        // Обновляем подсказки
-        this.path.selectAll("title")
-            .text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${this.formatValue(d.value)}`);
-
-        // Обновляем метки
-        this.label = this.labelGroup
-            .selectAll("text")
-            .data(this.root.descendants().slice(1))
-            .join("text")
-            .attr("dy", "0.35em")
-            .attr("fill-opacity", d => +this.labelVisible(d.current))
-            .attr("transform", d => this.labelTransform(d.current))
-            .text(d => d.data.name);
-    }
-
-    // Очистка ресурсов
     destroy() {
         if (this.svg) {
             this.svg.remove();
