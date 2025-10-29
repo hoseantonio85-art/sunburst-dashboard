@@ -8,31 +8,47 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📊 Панель операционных рисков</h1>
-            <div class="header-info">
-                <span class="risk-level high">Высокий риск</span>
-                <span class="risk-level medium">Средний риск</span>
-                <span class="risk-level low">Низкий риск</span>
-            </div>
-        </header>
-        
-        <div class="main-content">
-            <div class="chart-container" id="chart"></div>
-            <div class="details-panel" id="details">
-                <div class="details-header">
-                    <h3>Детализация риска</h3>
-                    <button id="back-btn" class="back-btn">← Назад</button>
-                </div>
-                <div id="details-content" class="details-content">
-                    <div class="welcome-message">
-                        <h4>Выберите категорию риска для детализации</h4>
-                        <p>Кликните на сегмент графика для просмотра детальной информации</p>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Операционные риски</h1>
+            <div class="header-controls">
+                <button id="backButton" class="back-button" disabled>
+                    ← Назад
+                </button>
+                <div class="risk-legend">
+                    <div class="legend-item">
+                        <span class="legend-color very-high"></span>
+                        Очень высокий
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color high"></span>
+                        Высокий
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color medium"></span>
+                        Средний
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color low"></span>
+                        Низкий
                     </div>
                 </div>
             </div>
-        </div>
+        </header>
+
+        <main class="dashboard-main">
+            <section class="chart-section">
+                <div id="sunburstChart" class="sunburst-container"></div>
+            </section>
+            
+            <section class="details-section">
+                <div id="detailsPanel" class="details-panel">
+                    <div class="details-placeholder">
+                        <p>Выберите сегмент диаграммы для просмотра деталей</p>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
 
     <script src="scripts/sunburst-chart.js"></script>
