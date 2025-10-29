@@ -1,1 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивный Sunburst Dashboard</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Аналитическая панель</h1>
+        </header>
+        
+        <div class="main-content">
+            <div class="chart-container" id="chart"></div>
+            <div class="details-panel" id="details">
+                <div class="details-header">
+                    <h3>Детализация данных</h3>
+                    <button id="reset-btn" class="reset-btn">Сбросить zoom</button>
+                </div>
+                <div id="details-content" class="details-content">
+                    <p class="placeholder">Выберите сегмент для детализации</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script src="scripts/sunburst-chart.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html>
