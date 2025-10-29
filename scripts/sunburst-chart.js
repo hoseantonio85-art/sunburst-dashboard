@@ -12,12 +12,9 @@ class SunburstChart {
         const height = width;
         const radius = width / 6;
 
-        // Цветовая шкала
-        this.color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, this.data.children.length + 1));
-
         // Вычисляем иерархию
         const hierarchy = d3.hierarchy(this.data)
-            .sum(d => d.value)
+            .sum(d => d.value || 0)
             .sort((a, b) => b.value - a.value);
         
         this.root = d3.partition()
@@ -59,6 +56,16 @@ class SunburstChart {
             .on("click", (event) => this.clicked(event, this.root));
     }
 
+    getRiskColor(riskLevel) {
+        const colors = {
+            'very-high': '#8B0000',     // Темно-красный
+            'high': '#FF4444',          // Красный
+            'medium': '#FFAA00',        // Желтый
+            'low': '#CCCCCC'            // Серый
+        };
+        return colors[riskLevel] || '#CCCCCC';
+    }
+
     updateChart() {
         const that = this;
 
@@ -67,11 +74,17 @@ class SunburstChart {
             .selectAll("path")
             .data(this.root.descendants().slice(1))
             .join("path")
-            .attr("fill", d => { 
-                while (d.depth > 1) d = d.parent; 
-                return this.color(d.data.name); 
+            .attr("fill", d => {
+                // Для корневого уровня используем нейтральный цвет
+                if (d.depth === 1) {
+                    return this.getRiskColor(d.data.riskLevel || 'low');
+                }
+                // Для вложенных уровней используем цвет риска
+                return this.getRiskColor(d.data.riskLevel || 'low');
             })
-            .attr("fill-opacity", d => this.arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
+            .attr("fill-opacity", d => this.arcVisible(d.current) ? (d.children ? 0.8 : 0.7) : 0)
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 1)
             .attr("pointer-events", d => this.arcVisible(d.current) ? "auto" : "none")
             .attr("d", d => this.arc(d.current));
 
@@ -82,7 +95,7 @@ class SunburstChart {
 
         // Добавляем title
         path.append("title")
-            .text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${d3.format(",d")(d.value)}`);
+            .text(d => `${d.ancestors().map(d => d.data.name).reverse().join(" → ")}\nУровень риска: ${this.getRiskLevelText(d.data.riskLevel)}\nПотери: ${d3.format(",d")(d.value || 0)}₽`);
 
         // Обновляем метки
         const label = this.svg.selectAll("text")
@@ -91,13 +104,29 @@ class SunburstChart {
             .attr("dy", "0.35em")
             .attr("fill-opacity", d => +this.labelVisible(d.current))
             .attr("transform", d => this.labelTransform(d.current))
-            .text(d => d.data.name);
+            .text(d => d.data.name)
+            .style("font-weight", "600")
+            .style("font-size", d => d.depth === 1 ? "12px" : "10px")
+            .style("fill", d => {
+                const riskLevel = d.data.riskLevel;
+                return (riskLevel === 'very-high' || riskLevel === 'high') ? 'white' : '#2c3e50';
+            });
 
         // Удаляем старые метки
         this.svg.selectAll("text")
             .data(this.root.descendants().slice(1))
             .exit()
             .remove();
+    }
+
+    getRiskLevelText(riskLevel) {
+        const levels = {
+            'very-high': 'Очень высокий',
+            'high': 'Высокий',
+            'medium': 'Средний',
+            'low': 'Низкий'
+        };
+        return levels[riskLevel] || 'Не определен';
     }
 
     clicked(event, p) {
@@ -123,7 +152,7 @@ class SunburstChart {
             .filter(function(d) {
                 return +this.getAttribute("fill-opacity") || this.arcVisible(d.target);
             })
-            .attr("fill-opacity", d => this.arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)
+            .attr("fill-opacity", d => this.arcVisible(d.target) ? (d.children ? 0.8 : 0.7) : 0)
             .attr("pointer-events", d => this.arcVisible(d.target) ? "auto" : "none")
             .attrTween("d", d => () => this.arc(d.current));
 
